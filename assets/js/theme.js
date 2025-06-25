@@ -1,6 +1,6 @@
 // Has to be in the head tag, otherwise a flicker effect will occur.
 
-// Toggle through light, dark, and system theme settings.
+// Toggle between light and dark theme settings.
 let toggleThemeSetting = () => {
   let themeSetting = determineThemeSetting();
   if (themeSetting == "system") {
@@ -8,7 +8,7 @@ let toggleThemeSetting = () => {
   } else if (themeSetting == "light") {
     setThemeSetting("dark");
   } else {
-    setThemeSetting("system");
+    setThemeSetting("light");
   }
 };
 
@@ -279,8 +279,11 @@ let determineComputedTheme = () => {
 
 let initTheme = () => {
   let themeSetting = determineThemeSetting();
-
-  setThemeSetting(themeSetting);
+  if (themeSetting === "system") {
+    setThemeSetting("dark");
+  } else {
+    setThemeSetting(themeSetting);
+  }
 
   // Add event listener to the theme toggle button.
   document.addEventListener("DOMContentLoaded", function () {

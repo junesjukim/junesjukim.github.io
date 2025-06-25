@@ -560,12 +560,12 @@ footer.sticky-bottom {
 
 .tag-category-list {
   border-bottom: 1px solid var(--global-divider-color);
-  text-align: center;
+  text-align: left;
   padding-top: 1rem;
 
   ul {
-    justify-content: center;
-    display: flow-root;
+    justify-content: flex-start;
+    display: flex;
 
     p,
     li {
@@ -683,8 +683,8 @@ footer.sticky-bottom {
   }
 
   h2.category {
-    color: var(--global-divider-color);
-    border-bottom: 1px solid var(--global-divider-color);
+    color: var(--global-text-color);
+    border-bottom: 1px solid var(--global-text-color);
     padding-top: 0.5rem;
     margin-top: 2rem;
     margin-bottom: 1rem;
@@ -714,8 +714,8 @@ footer.sticky-bottom {
   }
 
   h2.bibliography {
-    color: var(--global-divider-color);
-    border-top: 1px solid var(--global-divider-color);
+    color: var(--global-text-color);
+    border-top: 1px solid var(--global-text-color);
     padding-top: 1rem;
     margin-top: 2rem;
     text-align: right;
