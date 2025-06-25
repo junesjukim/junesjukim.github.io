@@ -257,8 +257,6 @@ jekyll-archives:
 
 # The blog button should not be removed.
 display_categories: [paper reviews, startup]
-# provide a list of categories to display on the blog page
-display_categories: [paper reviews, startup]
 # provide a list of tags to display on the blog page
 display_tags: [reinforcement learning, offline RL]
 
