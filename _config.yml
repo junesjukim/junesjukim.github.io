@@ -9,7 +9,7 @@ last_name: Kim
 contact_note: >
   Email: junesjukim@gmail.com | Mobile: +82-10-3597-3715
 description: > # the ">" symbol means to ignore newlines until "footer_text:"
-  Sungjoo Kim is a Seoul-based Biosystems Engineering & AI undergraduate at Seoul National University (SNU) (class of 2027). He is currently a research assistant in SNU's RLLAB, exploring Flow-Matching trajectory generation for offline RL, and a software engineer building accessibility apps for the visually impaired. His work spans robotic perception, on-device / edge AI, and bootstrapping tech startups that solve everyday problems for pets and people.
+  June Sungjoo Kim is a Seoul-based Biosystems Engineering & AI undergraduate at Seoul National University (SNU) (class of 2027). He is currently a research assistant in SNU's RLLAB, exploring Flow-Matching trajectory generation for offline RL, and a software engineer building accessibility apps for the visually impaired. His work spans robotic perception, on-device / edge AI, and bootstrapping tech startups that solve everyday problems for pets and people.
 footer_text: >
   Powered by <a href="https://jekyllrb.com/" target="_blank">Jekyll</a> with <a href="https://github.com/alshedivat/al-folio">al-folio</a> theme.
   Hosted by <a href="https://pages.github.com/" target="_blank">GitHub Pages</a>.
