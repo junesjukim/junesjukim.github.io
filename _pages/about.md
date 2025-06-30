@@ -6,7 +6,7 @@ subtitle: Reinforcement Learning, Robotics, On-device AI, Computer Vision, Start
 
 profile:
   align: right
-  image: prof_pic.jpg
+  image: profile_junesungjoo.jpg
   image_circular: false # crops the image to make it circular
   more_info:
 
