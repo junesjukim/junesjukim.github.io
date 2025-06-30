@@ -93,7 +93,7 @@ ninja.data = [{
               window.location.href = "/projects/sky_blue_workers/";
             },},{id: "projects-unmanned-orchard-robot",
           title: 'Unmanned Orchard Robot',
-          description: "Application of Vision Sensors for Auto-guidance and Yield Monitoring",
+          description: "Vision-Based Autonomous Guidance and Yield Monitoring",
           section: "Projects",handler: () => {
               window.location.href = "/projects/unmanned_orchard_robot/";
             },},{
