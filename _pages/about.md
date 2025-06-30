@@ -33,9 +33,4 @@ As an <strong>engineer</strong> and <strong>researcher</strong>, I explore:
 
 Currently, I am a <strong>research assistant</strong> at SNU's RLLAB and a <strong>software engineer</strong> at 2nd Company, where I build accessibility tools for the visually impaired.
 
-I am an <strong>undergraduate student</strong> at Seoul National University, majoring in Biosystems Engineering and Artificial Intelligence.
-
----
-### Honors & Awards
-- **Dongwon Development Fund Scholarship**, *Spring 2025 & Spring 2022*
-- **SNU Academic Scholarship**, *Fall 2021*
+I am an <strong>undergraduate student</strong> at Seoul National University, majoring in Biosystems Engineering and Artificial Intelligence. My academic diligence has been recognized through scholarships such as the <strong>Dongwon Development Fund Scholarship</strong> and the <strong>SNU Academic Scholarship</strong>.
