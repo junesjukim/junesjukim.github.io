@@ -40,6 +40,15 @@ Orchard environments pose unique challenges for automation.
 *   **Unstructured Terrain:** Irregular row spacing and scattered obstacles require robust perception and dynamic path planning.
 *   **Variable Conditions:** Fluctuating light and weather conditions demand a vision system that is resilient to change.
 
+<div class="row justify-content-center">
+    <div class="col-sm-8 mt-3 mt-md-0">
+        {% include figure.liquid path="assets/img/unmanned_orchard_environment.jpg" title="Challenging Orchard Environment" class="img-fluid rounded z-depth-1" %}
+    </div>
+</div>
+<div class="caption">
+    The real orchard environment presents major challenges for autonomous robots: deep tree shade, irregular terrain, various obstacles, and rapidly changing lighting conditions depending on time and weather. Overcoming these complexities was a core challenge of this project.
+</div>
+
 Our goal was to build a cost-effective robot that could reliably operate under these constraints using primarily vision and LiDAR sensors.
 
 ---
