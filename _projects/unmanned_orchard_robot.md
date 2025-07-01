@@ -24,10 +24,7 @@ This project introduces a **ROS-based autonomous robot** designed for modernizin
 
 <div class="row justify-content-center">
     <div class="col-sm-10 mt-3 mt-md-0">
-        <video width="100%" controls>
-            <source src="{{ '/assets/img/unmanned_orchard_full_demo.mp4' | relative_url }}" type="video/mp4">
-            Your browser does not support the video tag.
-        </video>
+        {% include video.liquid path="assets/img/unmanned_orchard_full_demo.mp4" class="img-fluid rounded z-depth-1" controls=true %}
     </div>
 </div>
 <div class="caption">
@@ -83,16 +80,10 @@ To develop a robust fruit detection system, we implemented a systematic and comp
 
 <div class="row justify-content-sm-center">
     <div class="col-sm-5 mt-3 mt-md-0">
-        <video width="100%" controls>
-            <source src="{{ '/assets/img/unmanned_orchard_dataset_collection.mp4' | relative_url }}" type="video/mp4">
-            Your browser does not support the video tag.
-        </video>
+        {% include video.liquid path="assets/img/unmanned_orchard_dataset_collection.mp4" class="img-fluid rounded z-depth-1" controls=true %}
     </div>
     <div class="col-sm-5 mt-3 mt-md-0">
-        <video width="100%" controls>
-            <source src="{{ '/assets/img/unmanned_orchard_dataset.mp4' | relative_url }}" type="video/mp4">
-            Your browser does not support the video tag.
-        </video>
+        {% include video.liquid path="assets/img/unmanned_orchard_dataset.mp4" class="img-fluid rounded z-depth-1" controls=true %}
     </div>
 </div>
 <div class="caption">
@@ -211,16 +202,10 @@ Our YOLOv5n model performs real-time detection with the following specifications
 
 <div class="row justify-content-sm-center">
     <div class="col-sm-5 mt-3 mt-md-0">
-        <video width="100%" controls>
-            <source src="{{ '/assets/img/unmanned_orchard_ai_detection.mp4' | relative_url }}" type="video/mp4">
-            Your browser does not support the video tag.
-        </video>
+        {% include video.liquid path="assets/img/unmanned_orchard_ai_detection.mp4" class="img-fluid rounded z-depth-1" controls=true %}
     </div>
     <div class="col-sm-5 mt-3 mt-md-0">
-        <video width="100%" controls>
-            <source src="{{ '/assets/img/unmanned_orchard_ai_detection_2.mp4' | relative_url }}" type="video/mp4">
-            Your browser does not support the video tag.
-        </video>
+        {% include video.liquid path="assets/img/unmanned_orchard_ai_detection_2.mp4" class="img-fluid rounded z-depth-1" controls=true %}
     </div>
 </div>
 <div class="caption">
@@ -244,10 +229,7 @@ The final integrated system was tested in a mock orchard environment. The robot 
 
 <div class="row justify-content-center">
     <div class="col-sm-10 mt-3 mt-md-0">
-        <video width="100%" controls>
-            <source src="{{ '/assets/img/unmanned_orchard_full_demo_2.mp4' | relative_url }}" type="video/mp4">
-            Your browser does not support the video tag.
-        </video>
+        {% include video.liquid path="assets/img/unmanned_orchard_full_demo_2.mp4" class="img-fluid rounded z-depth-1" controls=true %}
     </div>
 </div>
 <div class="caption">
