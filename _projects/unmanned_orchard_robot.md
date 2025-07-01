@@ -55,6 +55,8 @@ Our goal was to build a cost-effective robot that could reliably operate under t
 
 ### **3. System Architecture & Hardware**
 
+#### **3.1 System Overview (Hardware & Software Stack)**
+
 The robot is built on a modular hardware and software architecture to ensure flexibility and robustness.
 
 <div class="row justify-content-sm-center">
@@ -80,6 +82,26 @@ The robot is built on a modular hardware and software architecture to ensure fle
     *   **OS**: Ubuntu 18.04
     *   **Framework**: Robot Operating System (ROS1) Melodic
     *   **Key Libraries**: `GMapping` for SLAM, `PyTorch` for deep learning, `OpenCV` for image processing.
+
+#### **3.2 Hardware Iterations (Three Stages)**
+
+Throughout development, the robot's hardware was iteratively upgraded—primarily adjusting the camera type, position, and orientation to achieve **more accurate fruit counting**.
+
+<div class="row justify-content-sm-center mt-2">
+  <div class="col-sm-4 mt-3 mt-md-0">
+    {% include figure.liquid path="assets/img/unmanned_orchard_hardware_v1.jpg" title="Stage 1 – Initial Side-View Prototype" class="img-fluid rounded z-depth-1" %}
+  </div>
+  <div class="col-sm-4 mt-3 mt-md-0">
+    {% include figure.liquid path="assets/img/unmanned_orchard_hardware_v2.jpg" title="Stage 2 – Field Prototype" class="img-fluid rounded z-depth-1" %}
+  </div>
+  <div class="col-sm-4 mt-3 mt-md-0">
+    {% include figure.liquid path="assets/img/unmanned_orchard_hardware_2.jpg" title="Stage 3 – Competition-Ready" class="img-fluid rounded z-depth-1" %}
+  </div>
+</div>
+
+* **Stage 1 – Initial Side-View Prototype:** Two low-cost webcams mounted on the left and right sides of the chassis, providing only side-facing views of tree rows. This configuration was adequate for basic navigation tests but missed central fruits and therefore produced incomplete fruit-count statistics.
+* **Stage 2 – Field Prototype:** Dual stereo webcams angled downward and wider FOV; enabled depth estimation and better fruit localization while upgrading compute to Jetson Nano.
+* **Stage 3 – Competition-Ready:** High-resolution cameras re-mounted higher with optimized tilt for canopy coverage; refined LiDAR placement, ruggedized enclosure, and full sensor calibration for precise, consistent fruit counting in real orchards.
 
 ---
 
