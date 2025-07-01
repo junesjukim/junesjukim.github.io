@@ -119,12 +119,12 @@ We first created a controlled dataset in our laboratory environment to establish
 #### **4.2 Bias Reduction Strategies**
 To address potential data biases, we implemented several corrective measures:
 
-1. **Scale Bias Correction**: Added close-up fruit images to counteract the bias toward small-scale fruits
+**1) Scale Bias Correction**: Added close-up fruit images to counteract the bias toward small-scale fruits
    - Healthy fruits: 2, 1, 0 configurations
    - Diseased fruits: 4, 3, 2, 1, 0 configurations  
    - 2 images per configuration: 3×5×2 = 30 additional images
 
-<div class="row justify-content-sm-center">
+<div class="row justify-content-sm-center mt-2">
     <div class="col-sm-5 mt-3 mt-md-0">
         {% include figure.liquid path="assets/img/unmanned_orchard_scaled_dataset.jpg" title="Scale Bias Correction - Various Fruit Scales" class="img-fluid rounded z-depth-1" %}
     </div>
@@ -136,9 +136,21 @@ To address potential data biases, we implemented several corrective measures:
     **Left:** Examples of various fruit scales in the dataset showing different distances and sizes to reduce scale bias. **Right:** Close-up fruit images added to counteract small-scale bias, featuring different configurations of healthy and diseased fruits.
 </div>
 
-2. **Angular Diversity**: 180-degree rotation captures with repositioning to handle non-frontal detection scenarios
+**2) Angular Diversity**: 180-degree rotation captures with repositioning to handle non-frontal detection scenarios
 
-3. **Environmental Adaptation**: Systematic variation in lighting conditions and camera settings
+**3) Environmental Adaptation**: Systematic variation in lighting conditions and camera settings
+
+<div class="row justify-content-sm-center mt-2">
+    <div class="col-sm-5 mt-3 mt-md-0">
+        {% include figure.liquid path="assets/img/unmanned_orchard_robot_view_1.jpg" title="Robot View – Environmental Lighting" class="img-fluid rounded z-depth-1" %}
+    </div>
+    <div class="col-sm-5 mt-3 mt-md-0">
+        {% include figure.liquid path="assets/img/unmanned_orchard_robot_view_2.jpg" title="Robot View – Obstacle Scenario" class="img-fluid rounded z-depth-1" %}
+    </div>
+</div>
+<div class="caption">
+    **Left:** Robot camera view illustrating challenging lighting conditions during operation. **Right:** Robot perspective showcasing obstacles and irregular terrain, emphasizing the need for robust environmental adaptation strategies.
+</div>
 
 **Final Lab Dataset**: 786 images with rich diversity and minimal bias
 
