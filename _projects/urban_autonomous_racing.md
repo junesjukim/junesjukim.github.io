@@ -62,21 +62,9 @@ The project was developed for the **2022 Segye AI Robot Car Race, hosted by Segy
 
 The vehicle is built on a modular hardware and software architecture to ensure flexibility and robustness.
 
-<div class="row justify-content-sm-center">
-    <div class="col-sm-5 mt-3 mt-md-0">
-        {% include figure.liquid path="assets/img/autonomous_driving_hardware_overview.png" title="Hardware Architecture Overview" class="img-fluid rounded z-depth-1" %}
-    </div>
-    <div class="col-sm-5 mt-3 mt-md-0">
-        {% include figure.liquid path="assets/img/autonomous_driving_algorithm_overview.jpg" title="Algorithmic System Overview" class="img-fluid rounded z-depth-1" %}
-    </div>
-</div>
-<div class="caption">
-    **Left:** Hardware architecture overview showing system components and their interconnections. **Right:** Algorithmic workflow demonstrating the integration of perception, planning, and control for autonomous driving.
-</div>
-
 *   **Hardware Stack**:
     *   **Chassis**: ERP42 UGV Platform
-    *   **Compute**: NEOUSYS POC-545
+    *   **Compute**: NEOUSYS POC-545, NVIDIA Jetson Xavier
     *   **Primary Sensors**: Velodyne VLP-16 LiDAR, Logitech RGB Camera
     *   **GPS/IMU**: u-blox GPS, Low-cost IMU
     *   **Controller**: ERP42 Internal Motor Controller
@@ -84,7 +72,7 @@ The vehicle is built on a modular hardware and software architecture to ensure f
 *   **Software Stack**:
     *   **OS**: Ubuntu 18.04
     *   **Framework**: Robot Operating System (ROS1) Melodic
-    *   **Key Libraries**: `CUDA 10.2`, `OpenCV 3.2`, `YOLOv5`, `PCL` for point cloud processing, `Gazebo` for simulation, `Rviz` for visualization.
+    *   **Key Libraries**: `OpenCV 3.2`, `PCL` for point cloud processing, `YOLOv5` for obstacle detection, `Gazebo by MORAI` for simulation, `Rviz` for visualization.
 
 ---
 
