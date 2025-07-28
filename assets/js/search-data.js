@@ -81,21 +81,16 @@ ninja.data = [{
           description: "Daily Pet Care Management Platform",
           section: "Projects",handler: () => {
               window.location.href = "/projects/passionate_pet_lover/";
-            },},{id: "projects-autonomous-driving-robot-si-dong-ai",
-          title: 'Autonomous Driving Robot (Si:Dong AI)',
-          description: "YOLOv5 application on Depth Camera and Fusion with Lidar for Autonomous Driving",
-          section: "Projects",handler: () => {
-              window.location.href = "/projects/sidong_ai/";
-            },},{id: "projects-sky-blue-workers",
-          title: 'Sky Blue Workers',
-          description: "Job Platform for Blue Collar Workers",
-          section: "Projects",handler: () => {
-              window.location.href = "/projects/sky_blue_workers/";
             },},{id: "projects-unmanned-orchard-robot",
           title: 'Unmanned Orchard Robot',
           description: "Vision-Based Autonomous Guidance and Yield Monitoring",
           section: "Projects",handler: () => {
               window.location.href = "/projects/unmanned_orchard_robot/";
+            },},{id: "projects-urban-autonomous-racing",
+          title: 'Urban Autonomous Racing',
+          description: "Building and racing a fully autonomous vehicle, focusing on robust state-based control systems and a custom perception data engine.",
+          section: "Projects",handler: () => {
+              window.location.href = "/projects/urban_autonomous_racing/";
             },},{
         id: 'social-email',
         title: 'email',
