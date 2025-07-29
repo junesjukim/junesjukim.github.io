@@ -7,6 +7,8 @@ importance: 2
 category: work
 ---
 
+Project Link: [https://github.com/2nd-Company/MEDi](https://github.com/2nd-Company/MEDi)
+
 <div align="center">
   <img src="/assets/img/medi_app/MEDi_logo.jpeg" alt="MEDi Logo" width="200">
 </div>
@@ -27,7 +29,6 @@ To prevent medication misuse, we developed a way to guide pharmaceutical shoppin
 
 The **MEDi** team is constantly striving to improve and develop the platform, setting goals to provide accurate information and a user-friendly UI/UX. We are deeply committed to continually enhancing the environment for people who often remain in the shadows, ensuring they have access to tools that empower their daily lives.
 
-Project Link: [https://github.com/2nd-Company/MEDi](https://github.com/2nd-Company/MEDi)
 ---
 
 ### **2. The Challenge: The Visually Impaired Shopper's Experience**
