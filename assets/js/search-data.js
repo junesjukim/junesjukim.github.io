@@ -71,9 +71,9 @@ ninja.data = [{
             },},{id: "news-a-simple-inline-announcement-with-markdown-emoji-sparkles-smile",
           title: 'A simple inline announcement with Markdown emoji! :sparkles: :smile:',
           description: "",
-          section: "News",},{id: "projects-medi-app",
-          title: 'MEDi App',
-          description: "An interactive AI assistant for visually-impaired shoppers, enabling real-time product finding and navigation in retail stores using on-device computer vision and hand-tracking.",
+          section: "News",},{id: "projects-medi",
+          title: 'MEDi',
+          description: "An AI-driven platform to help visually impaired individuals identify pharmaceutical products.",
           section: "Projects",handler: () => {
               window.location.href = "/projects/medi_app/";
             },},{id: "projects-passionate-pet-lover",
