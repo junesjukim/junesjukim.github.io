@@ -73,7 +73,7 @@ ninja.data = [{
           description: "",
           section: "News",},{id: "projects-medi-app",
           title: 'MEDi App',
-          description: "An accessibility app for visually-impaired shoppers",
+          description: "An interactive AI assistant for visually-impaired shoppers, enabling real-time product finding and navigation in retail stores using on-device computer vision and hand-tracking.",
           section: "Projects",handler: () => {
               window.location.href = "/projects/medi_app/";
             },},{id: "projects-passionate-pet-lover",
