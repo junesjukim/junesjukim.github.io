@@ -1,40 +1,46 @@
 ---
 layout: page
-title: MEDi App
-description: An interactive AI assistant for visually-impaired shoppers, enabling real-time product finding and navigation in retail stores using on-device computer vision and hand-tracking.
-img: assets/img/medi_app_title.jpeg
+title: MEDi
+description: An AI-driven platform to help visually impaired individuals identify pharmaceutical products.
+img: assets/img/medi_app/MEDi_logo.jpeg
 importance: 2
 category: work
 ---
 
-<div class="row justify-content-center">
-    <div class="col-sm-8 mt-3 mt-md-0">
-        {% include figure.liquid loading="eager" path="assets/img/medi_app_title.jpeg" title="The MEDi App in Action" class="img-fluid rounded z-depth-1" %}
-    </div>
+<div align="center">
+  <img src="/assets/img/medi_app/MEDi_logo.jpeg" alt="MEDi Logo" width="200">
 </div>
-<div class="caption">
-    MEDi: An AI-driven platform assisting visually impaired individuals with product identification in retail environments.
+<div align="center">
+  <h2>MEDi</h2>
 </div>
+<p align="center">AI-driven medication detection platform</p>
 
 ---
 
 ### **1. Overview**
 
-This project, developed for the **2024 Summer Explore CSR AIoT Lab**, details the creation of the "Convenience Store Helper" (MEDi App), an assistive AIoT application for visually impaired individuals. The project moves beyond simple object recognition to create an interactive, real-time guidance system. Our core achievement is the successful implementation of a complex, multi-model AI pipeline on a mobile device, which interprets a user's spoken request for a product and provides intuitive, directional feedback to help them locate it. This system is designed to directly address the navigational, informational, and physical barriers that make retail environments challenging for visually impaired shoppers.
+Hello, we are a startup named **2nd Company**, creating an AI-driven platform designed to assist visually impaired individuals in efficiently and accurately identifying pharmaceutical products in stores.
 
+To prevent medication misuse, we developed a way to guide pharmaceutical shopping effectively. In February 2025, we launched a platform called MEDi. 
+
+**MEDi** provides step-by-step shopping guide agents by utilizing hand-tracking and object detection rather than broad assistance. For added convenience, we also offer audible recognition features essential for users to navigate their shopping experience with ease and confidence.
+
+The **MEDi** team is constantly striving to improve and develop the platform, setting goals to provide accurate information and a user-friendly UI/UX. We are deeply committed to continually enhancing the environment for people who often remain in the shadows, ensuring they have access to tools that empower their daily lives.
+
+Project Link: [https://github.com/2nd-Company/MEDi](https://github.com/2nd-Company/MEDi)
 ---
 
 ### **2. The Challenge: The Visually Impaired Shopper's Experience**
 
-The primary motivation for this application stems from in-depth user research, including interviews with visually impaired individuals who frequent convenience stores. This research revealed a journey fraught with obstacles, validating the need for a more advanced assistive tool.
+The primary motivation for this application stems from the significant challenges visually impaired individuals face when identifying and managing medications. Safe and effective medication use depends on access to clear, accurate information, which is often unavailable on standard packaging.
 
-*   **Navigational and Physical Hurdles**: Users reported difficulty finding store entrances, locating key areas like the sales counter, and navigating aisles. Collisions with product displays are common, and retrieving items from high or low shelves is a significant challenge. Modern touch-screen appliances, like microwaves, are often unusable due to the lack of tactile feedback.
+*   **Identification & Safety Hurdles**: Many medications come in similar packaging, making it difficult to distinguish between them without sight. This can lead to dangerous medication errors. Reading small-print instructions, dosages, and warnings on labels is a major obstacle.
 
-*   **Profound Information Deficit**: The most critical barrier is the lack of access to product information. Braille on packaging is exceedingly rare and often generic (e.g., "beverage"). This leaves users unable to determine a product's name, flavor, price, or, critically, its expiration date.
+*   **Profound Information Deficit**: The most critical barrier is the lack of access to crucial information. Expiration dates, potential side effects, and allergen warnings are vital for safety but are inaccessible on standard packaging. Braille is almost never present on pharmaceutical products.
 
-*   **Limitations of Existing Tools**: Our review of existing technologies revealed critical gaps. Reactive tools like "Show Now" require the user to find the product first, failing to solve the primary search problem. General-purpose apps like "Sullivan Plus" often provide excessive, non-contextual information, leading to cognitive overload.
+*   **Limitations of Existing Tools**: While general-purpose magnification or reading apps exist, they are not tailored for the specific task of medication identification. They can be slow, provide non-contextual information, and may not be reliable for the critical task of reading medical text, leading to cognitive overload and potential errors.
 
-This analysis crystalized the need for a proactive, interactive, and contextually-aware system that allows a user to state their intent and receive guided, relevant assistance.
+This analysis crystalized the need for a proactive, interactive, and contextually-aware system designed specifically for identifying medications and providing guided, relevant assistance.
 
 ---
 
@@ -43,7 +49,7 @@ This analysis crystalized the need for a proactive, interactive, and contextuall
 The application is built on a sophisticated, multi-stage system architecture designed to facilitate a seamless interactive loop between the user and their environment. The entire pipeline is optimized for on-device performance to ensure low latency and user privacy.
 
 *   **Prototyping & Learning Platform**:
-    *   **Hardware**: Google Coral Dev Board with Edge TPU coprocessor. This platform was used during our "Ambient On-Device AI Bootcamp" to master the principles of on-device AI, including model optimization and quantization, before tackling the mobile environment.
+    *   **Hardware**: Android Device
 
 *   **Mobile Development Environment**:
     *   **IDE**: Android Studio
@@ -53,16 +59,7 @@ The application is built on a sophisticated, multi-stage system architecture des
         *   **Google MediaPipe**: For robust, real-time hand landmark detection.
     *   **Language & Tools**: Kotlin with the Android NDK for integrating high-performance C++ libraries.
 
-The system's logic follows a continuous guidance loop, orchestrated from user input to system output.
-
-<div class="row justify-content-center">
-    <div class="col-sm-10 mt-3 mt-md-0">
-        {% include figure.liquid path="assets/img/medi_app_flowchart.svg" title="Interactive Guidance Loop" class="img-fluid rounded z-depth-1" %}
-    </div>
-</div>
-<div class="caption">
-    The application's architecture translates a user's spoken request into real-time visual analysis and back into audible guidance, creating a seamless interactive loop.
-</div>
+The system's logic follows a continuous guidance loop, orchestrated from user input to system output. The application's architecture translates a user's spoken request into real-time visual analysis and back into audible guidance, creating a seamless interactive loop.
 
 ---
 
@@ -72,18 +69,9 @@ A robust object detection model requires a high-quality, diverse dataset. We ado
 
 *   **Data Sources**:
     1.  **Direct Capture (Real Data)**: We captured video of beverages at an on-campus convenience store. This data, perfectly representing the target environment, was used exclusively for the validation and test sets to ensure an unbiased measure of true performance.
-    2.  **AI Hub (Synthetic Data)**: To overcome the bottleneck of manual labeling, we leveraged standardized product images from AI Hub, a South Korean government-backed data initiative. We used these to synthetically generate 2,000 training images.
+    2.  **Web Crawling (Synthetic Data)**: To overcome the bottleneck of manual labeling, we leveraged standardized product images from Google. We used these to synthetically generate 2,000 training images.
 
 *   **Data Platform**: We used **Roboflow** as a comprehensive platform for dataset management, annotation, and augmentation. Augmentations like altering brightness, contrast, and rotation were applied to make the model more robust to real-world environmental variations.
-
-*   **Final Dataset Split**:
-
-| Data Split | Type | Source | Image Count | Percentage |
-| :--- | :--- | :--- | :--- | :--- |
-| **Training Set** | Synthetic | AI Hub Data | 2000 | 82.0% |
-| | Real | Direct Capture | 442 | 18.0% |
-| **Validation Set** | Real | Direct Capture | 116 | 4.0% |
-| **Test Set** | Real | Direct Capture | 20 | 1.0% |
 
 ---
 
@@ -95,21 +83,7 @@ Our evaluation focused on the industry-standard metric of mean Average Precision
 
 *   **Performance Results**: After training, our model was tested on the holdout set of 20 real-world images, achieving a final **mAP of 0.76**. This is a strong and highly commendable result for a prototype system operating in such a challenging domain.
 
-*   **Per-Class Performance**:
-
-| Product Class | Average Precision (AP) |
-| :--- | :--- |
-| Powerade | 0.73 |
-| Pocari | 0.77 |
-| Bong Bong Grape | 0.84 |
-| Guronsan | 0.72 |
-| Grinded Pear | 0.80 |
-| Vita500 | 0.69 |
-| Wisaengcheon | 0.74 |
-| Hovenia | 0.79 |
-| **Average (mAP)** | **0.76** |
-
-The variance in AP scores provides a clear path for future improvement: collecting more training examples for lower-scoring classes like "Vita500" can help boost their performance.
+The variance in AP scores provides a clear path for future improvement: collecting more training examples for lower-scoring classes like "Zzzquil" can help boost their performance.
 
 ---
 
@@ -136,27 +110,26 @@ To create a truly intuitive interface, we moved beyond purely verbal commands an
 The project successfully produced a functional proof-of-concept that validates our core approach. The final Android application demonstrates the feasibility of using a complex, on-device AI pipeline to solve a real-world accessibility problem. The **mAP score of 0.76** on a real-world test set confirms that the vision model is performing at a level sufficient for a compelling demonstration.
 
 #### **Screenshots 📱**
-
 <div class="row justify-content-sm-center mt-2">
   <div class="col-sm-4 mt-3 mt-md-0">
-    {% include figure.liquid path="assets/img/medi_app/screenshot1.jpeg" title="Screenshot 1" class="img-fluid rounded z-depth-1" %}
+    {% include figure.liquid path="assets/img/medi_app/Screenshot1.jpeg" title="Screenshot 1" class="img-fluid rounded z-depth-1" %}
   </div>
   <div class="col-sm-4 mt-3 mt-md-0">
-    {% include figure.liquid path="assets/img/medi_app/screenshot2.jpeg" title="Screenshot 2" class="img-fluid rounded z-depth-1" %}
+    {% include figure.liquid path="assets/img/medi_app/Screenshot2.jpeg" title="Screenshot 2" class="img-fluid rounded z-depth-1" %}
   </div>
   <div class="col-sm-4 mt-3 mt-md-0">
-    {% include figure.liquid path="assets/img/medi_app/screenshot3.jpeg" title="Screenshot 3" class="img-fluid rounded z-depth-1" %}
+    {% include figure.liquid path="assets/img/medi_app/Screenshot3.jpeg" title="Screenshot 3" class="img-fluid rounded z-depth-1" %}
   </div>
 </div>
 <div class="row justify-content-sm-center mt-3">
   <div class="col-sm-4 mt-3 mt-md-0">
-    {% include figure.liquid path="assets/img/medi_app/screenshot4.jpeg" title="Screenshot 4" class="img-fluid rounded z-depth-1" %}
+    {% include figure.liquid path="assets/img/medi_app/Screenshot4.jpeg" title="Screenshot 4" class="img-fluid rounded z-depth-1" %}
   </div>
   <div class="col-sm-4 mt-3 mt-md-0">
-    {% include figure.liquid path="assets/img/medi_app/screenshot5.jpeg" title="Screenshot 5" class="img-fluid rounded z-depth-1" %}
+    {% include figure.liquid path="assets/img/medi_app/Screenshot5.jpeg" title="Screenshot 5" class="img-fluid rounded z-depth-1" %}
   </div>
   <div class="col-sm-4 mt-3 mt-md-0">
-    {% include figure.liquid path="assets/img/medi_app/screenshot6.jpeg" title="Screenshot 6" class="img-fluid rounded z-depth-1" %}
+    {% include figure.liquid path="assets/img/medi_app/Screenshot6.jpeg" title="Screenshot 6" class="img-fluid rounded z-depth-1" %}
   </div>
 </div>
 
@@ -164,26 +137,77 @@ The project successfully produced a functional proof-of-concept that validates o
 
 ### **8. Technical Contributions & Lessons Learned**
 
-*   **Innovative UI/UX**: The project's most innovative feature is its intuitive hand-pointing interface, which leverages a sophisticated hand-tracking model to create a natural and direct mode of interaction, moving beyond purely verbal feedback systems.
-
-*   **Pragmatic Data Engineering**: We demonstrated a successful and pragmatic dataset strategy, combining real-world data for validation with scalable synthetic data for training, which was a key enabler of our prototype's success.
-
-*   **On-Device AI Mastery**: The successful implementation of the entire multi-model system within a mobile Android environment demonstrates a mastery of on-device AI principles, including model optimization and building efficient, real-time data pipelines.
-
-*   **Limitation as a Guide**: A key lesson was acknowledging the prototype's narrow scope. While it successfully finds a small catalog of products, our own research shows this is just one piece of a much larger puzzle. This limitation provides a clear roadmap for future work.
+During the development of MEDi, I took the lead in solving a critical performance bottleneck in our on-device inference pipeline. The initial model exhibited high latency on mobile hardware, making the real-time guidance feature unreliable. To address this, I implemented a two-pronged optimization strategy. First, I migrated the object detection model to TensorFlow Lite and applied quantization techniques, which significantly reduced the model size while maintaining our target accuracy of **0.76 mAP**. Second, I re-architected the data flow to process the hand-tracking and object detection streams asynchronously. These optimizations substantially reduced processing latency, resulting in a smooth and responsive user experience. This project was a valuable experience in optimizing AI models for resource-constrained environments, strengthening my ability to build practical, scalable AI products.
 
 ---
 
 ### **9. Conclusion & Future Work**
 
-The "Convenience Store Helper" successfully proves the viability of its core technological approach. The path forward lies in systematically expanding its capabilities to create a holistic solution that addresses the full spectrum of challenges faced by visually impaired shoppers.
+The MEDi app successfully proves the viability of its core technological approach. The path forward lies in systematically expanding its capabilities to create a holistic solution that addresses the full spectrum of challenges faced by visually impaired shoppers.
 
-*   **Model Expansion and Scalability**: The immediate next step is to expand the object detection model to include hundreds of product categories beyond beverages, requiring a significant data collection and labeling effort.
+*   **Model Expansion and Scalability**: The immediate next step is to expand the object detection model to include a comprehensive database of pharmaceutical products, requiring a significant data collection and labeling effort.
 
 *   **Enhanced Functional Capabilities**: Future development should focus on integrating new AI models to address other identified user needs:
-    *   **Optical Character Recognition (OCR)**: To read prices, nutritional information, and, most critically, expiration dates.
-    *   **General Navigation**: To assist with obstacle avoidance and guidance to key store landmarks like the checkout counter and exit.
+    *   **Optical Character Recognition (OCR)**: To read prescription labels, dosages, warnings, and, most critically, expiration dates from packaging.
+    *   **General Navigation**: To assist with navigating complex pharmacy environments.
 
-*   **Increased Robustness**: Future work must focus on improving the system's reliability in a wider variety of "open environment" conditions, including diverse store layouts, lighting, and seasonal product displays.
+*   **Increased Robustness**: Future work must focus on improving the system's reliability in a wider variety of "open environment" conditions, including diverse pharmacy layouts, lighting, and packaging variations.
 
-Project Link: [https://github.com/2nd-Company/MEDi](https://github.com/2nd-Company/MEDi) 
+---
+
+#### **Download ⬇️**
+
+https://play.google.com/apps/testing/com.MedI
+
+MEDi is currently having a beta testing process.
+
+---
+
+#### **Permissions 🔒**
+
+Camera permission is required to proceed to the Medication Detection phase.
+
+---
+
+#### **License**
+This repository has been created as a part of the ongoing development of the [MEDi](https://github.com/2nd-Company/MEDi) project.
+
+The work in this repository is licensed under the [MIT](https://github.com/2nd-Company/MEDi/blob/main/LICENSE) license.
+
+Copyright (c) 2025 2nd Company
+
+---
+
+#### **Contact**
+
+[Sungjoo Kim](https://github.com/junesjukim) 
+- https://www.linkedin.com/in/sungjoo-kim-june777 
+- junesjukim@gmail.com
+
+[Ethan Park](https://github.com/ethansjpark) 
+- https://www.linkedin.com/in/esjp/
+- ethansjpark@gmail.com
+
+Project Link: [https://github.com/2nd-Company/MEDi](https://github.com/2nd-Company/MEDi)
+
+---
+
+#### **Built With**
+* [![TensorFlow Lite][TensorFlow]][TensorFlowLite-url]
+* [![Kotlin-l][Kotlin]][Kotlin-url]
+
+<!-- MARKDOWN LINKS & IMAGES -->
+<!-- https://www.markdownguide.org/basic-syntax/#reference-style-links -->
+[contributors-shield]: https://img.shields.io/github/contributors/2nd-Company/MEDi?style=for-the-badge&color=green
+[contributors-url]: https://github.com/2nd-Company/MEDi/contributors
+[license-shield]: https://img.shields.io/github/license/2nd-Company/Medi?style=for-the-badge
+[license-url]: https://github.com/2nd-Company/MEDi/blob/main/LICENSE 
+[linkedin-shield]: /assets/img/Linkedin.png
+[github-surl]: https://github.com/junesjukim
+[github-eurl]: https://github.com/ethansjpark
+[linkedin-surl]: https://www.linkedin.com/in/sungjoo-kim-june777
+[linkedin-eurl]: https://www.linkedin.com/in/esjp/
+[TensorFlow]: https://img.shields.io/badge/TensorFlow-%23FF6F00.svg?style=for-the-badge&logo=TensorFlow&logoColor=white
+[TensorFlowLite-url]: https://ai.google.dev/edge/lite/
+[Kotlin]: https://img.shields.io/badge/kotlin-%237F52FF.svg?style=for-the-badge&logo=kotlin&logoColor=white
+[Kotlin-url]: https://kotlinlang.org/ 
