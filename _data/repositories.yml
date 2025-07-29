@@ -4,7 +4,7 @@ github_users:
 repo_description_lines_max: 2
 
 github_repos:
-  - junesjukim/diffuser_research
+  - junesjukim/advantage_diffuser
   - junesjukim/diffuser_ogbench
   - junesjukim/RL-Foundations-Jax
   - 2nd-Company/MEDi
