@@ -3,7 +3,7 @@ layout: page
 title: Unmanned Orchard Robot
 description: Vision-Based Autonomous Guidance and Yield Monitoring
 img: assets/img/unmanned_orchard_hardware_1.jpg
-importance: 4
+importance: 3
 category: work
 ---
 

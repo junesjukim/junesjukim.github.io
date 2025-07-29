@@ -3,7 +3,7 @@ layout: page
 title: Urban Autonomous Racing
 description: Building and racing a fully autonomous vehicle, focusing on robust state-based control systems and a custom perception data engine.
 img: assets/img/urban_autonomous_racing_title.jpg
-importance: 3
+importance: 4
 category: work
 ---
 
@@ -78,20 +78,26 @@ The vehicle is built on a modular hardware and software architecture to ensure f
 
 ### **4. Dataset Collection & Preparation Strategy**
 
-To develop a robust object detection model, we implemented a systematic and comprehensive dataset preparation strategy. The primary data source was a video recording from a camera mounted on a vehicle during a previous competition. From over 56,000 frames, we extracted approximately 8,000 images by sampling every 7th frame to ensure diversity while managing redundancy.
+To develop a robust vehicle and road obstacle detection model that could be effectively fused with LiDAR sensor outputs, we implemented a systematic and comprehensive dataset preparation strategy. A calibrated RealSense depth camera was utilized for data collection, ensuring accurate alignment between vision and LiDAR modalities. The dataset was primarily focused from images captured at distances of 10 to 15 meters ahead of the vehicle and within an angle of up to 30 degrees, reflecting the operational range required for real-time obstacle avoidance.
 
-For efficient and collaborative labeling, we utilized **Roboflow**, a platform that streamlined the annotation process. Our team successfully labeled around 4,000 images, creating a high-quality dataset of race-specific scenarios. This dataset was then split into training and validation sets to develop and fine-tune our detection model, with a portion reserved for final testing.
+The output of the vision model was intended to serve as the primary input for obstacle avoidance control, with detection beginning at 10 to 15 meters. For close-range emergency stops, we relied exclusively on the LiDAR sensor, and therefore, close obstacle detection was not a focus during vision model training.
+
+The primary data source consisted of video recordings from a camera mounted on the vehicle during a previous competition. From over 56,000 frames, we extracted approximately 8,000 images by sampling every 7th frame to ensure diversity while managing redundancy. In addition, we specifically augmented the dataset with scenarios where obstacles appeared on the right side of the vehicle during left turn maneuvers, as these situations were identified as particularly challenging during real-world operation.
+
+For efficient and collaborative labeling, we utilized **Roboflow**, a platform that streamlined the annotation process. Our team successfully labeled around 4,000 images, creating a high-quality dataset tailored to race-specific scenarios. This dataset was then split into training and validation sets to develop and fine-tune our detection model, with a portion reserved for final testing.
 
 <div class="row justify-content-sm-center">
     <div class="col-sm-5 mt-3 mt-md-0">
-        {% include video.liquid path="assets/img/autonomous_driving_dataset_collection.mp4" class="img-fluid rounded z-depth-1" controls=true %}
+        <div class="rounded z-depth-1" style="height: 250px; background-image: url('{{"/assets/img/urban_autonomous_racing_dataset.png" | relative_url }}'); background-size: cover; background-position: center;">
+        </div>
     </div>
     <div class="col-sm-5 mt-3 mt-md-0">
-        {% include video.liquid path="assets/img/autonomous_driving_dataset.mp4" class="img-fluid rounded z-depth-1" controls=true %}
+        <div class="rounded z-depth-1" style="height: 250px; background-image: url('{{"/assets/img/urban_autonomous_racing_dataset_simulation.jpg" | relative_url }}'); background-size: cover; background-position: center;">
+        </div>
     </div>
 </div>
 <div class="caption">
-    **Left:** Dataset collection process showing systematic data capture from various driving scenarios. **Right:** Overview of the diverse dataset including different weather conditions and traffic situations.
+    **Left:** A glimpse into our extensive, custom-built dataset, featuring over 4,000 labeled images that capture a wide variety of real-world racing scenarios. **Right:** The simulated environment in which our models were rigorously tested, allowing for rapid iteration and validation of our autonomous driving algorithms.
 </div>
 
 ---
@@ -102,20 +108,39 @@ For efficient and collaborative labeling, we utilized **Roboflow**, a platform t
 
 We selected YOLOv5 for its balance of speed and accuracy, making it suitable for real-time object detection on our hardware. The model was trained on our custom dataset of ~4,000 labeled images. The training results showed excellent performance on the validation set, with the model effectively learning to identify vehicles in various racing scenarios. Analysis of the F1, Precision, and Recall curves indicated a well-generalized model. However, the label analysis also revealed some imbalance in the dataset, such as a concentration of objects at specific sizes, which informed areas for future data augmentation.
 
-<div class="row justify-content-sm-center align-items-stretch">
-    <div class="col-sm-5 mt-3 mt-md-0 d-flex">
-        <div class="w-100">
-            {% include figure.liquid path="assets/img/autonomous_driving_train_result.jpg" title="Training Results" class="img-fluid rounded z-depth-1" %}
+#### **5.2 Inference Analysis & Improvement Plan**
+
+The model demonstrated robust object detection in general driving conditions, but inference analysis revealed limitations in specific scenarios:
+
+*   **Detection Errors & Inaccurate Bounding Boxes:**
+    *   The model frequently misidentified a vehicle's right wheel as a separate, smaller object, leading to duplicate detections.
+    *   Bounding box predictions were often imprecise, with vehicle wheels partially cropped, resulting in an incorrect size.
+
+*   **Poor Generalization to Unseen Scenarios:**
+    *   The model failed to detect vehicles at very close ranges, as this scenario was absent from our training data.
+    *   Overlapping vehicles, also missing from the dataset, were either not detected or were identified with an incorrectly small bounding box.
+
+To address these issues and guide future development, we have outlined the following improvement plan:
+
+*   **Data Augmentation & Hyperparameter Tuning:**
+    *   For the misdetection and bounding box issues, we plan to add more relevant data to improve model accuracy. We can then raise the confidence threshold to filter out false positives.
+    *   We enabled YOLOv5’s `--agnostic` NMS (Non-Maximal Suppression) to prevent duplicate detections across different classes and manually tune the `multi_label` parameter to adjust sensitivity to smaller objects.
+
+*   **Edge-Case Data Enhancement:**
+    *   To handle close-proximity and overlapping vehicle scenarios, we focused on collecting and labeling data that specifically covers these edge cases to enrich the dataset.
+
+<div class="row justify-content-sm-center">
+    <div class="col-sm-5 mt-3 mt-md-0">
+        <div class="rounded z-depth-1" style="height: 250px; background-image: url('{{"/assets/img/urban_autonomous_racing_model_error_1.png" | relative_url }}'); background-size: cover; background-position: center;">
         </div>
     </div>
-    <div class="col-sm-5 mt-3 mt-md-0 d-flex">
-        <div class="w-100">
-            {% include figure.liquid path="assets/img/autonomous_driving_confidence_matrix.png" title="Dataset Label Distribution" class="img-fluid rounded z-depth-1" %}
+    <div class="col-sm-5 mt-3 mt-md-0">
+        <div class="rounded z-depth-1" style="height: 250px; background-image: url('{{"/assets/img/urban_autonomous_racing_model_error_2.png" | relative_url }}'); background-size: cover; background-position: center;">
         </div>
     </div>
 </div>
 <div class="caption">
-    **Left:** Training validation curves showing high F1 and Precision/Recall scores, indicating our YOLOv5 model learned to generalize well from our specific race-day dataset. **Right:** Analysis of our dataset's label distribution. The bimodal distribution in object size revealed a bias towards near/far objects, which directly informed our strategy for future data augmentation.
+    **Left & Right:** Examples of model inference errors. The left image shows a case of duplicate detection where the vehicle's wheel is mistaken for a separate object. The right image illustrates incorrect bounding box sizing when vehicles are overlapping.
 </div>
 
 ---
@@ -155,11 +180,11 @@ This section is structured around the core engineering challenges our team solve
 
 ### **7. Results**
 
-The final integrated system was tested extensively in various urban environments. While the individual components like object detection and localization performed well, a critical issue emerged during high-speed avoidance maneuvers. The vehicle successfully detected oncoming obstacles but often initiated the lane-change maneuver too late. This delay meant the car would reach its emergency stop distance before it could complete the avoidance, resulting in a full stop rather than a smooth lane change. This "wiggling" behavior, where the car hesitated before acting, was a key bottleneck that prevented successful race completion.
+The final integrated system was tested in a obstacled racing environment. The individual components like object detection and localization performed well, issue emerged during high-speed avoidance maneuvers. The vehicle successfully detected oncoming obstacles but often initiated the lane-change maneuver too late. This delay meant the car would reach its emergency stop distance before it could complete the avoidance, resulting in a full stop rather than a smooth lane change. This "wiggling" behavior, where the car hesitated before acting, was a key bottleneck that prevented successful race completion.
 
 <div class="row justify-content-center">
     <div class="col-sm-10 mt-3 mt-md-0">
-        {% include video.liquid path="assets/img/autonomous_driving_full_demo_2.mp4" class="img-fluid rounded z-depth-1" controls=true %}
+        {% include video.liquid path="assets/img/urban_autonomous_racing_model_result.mp4" class="img-fluid rounded z-depth-1" controls=true %}
     </div>
 </div>
 <div class="caption">
