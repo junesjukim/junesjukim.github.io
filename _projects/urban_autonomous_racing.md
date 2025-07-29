@@ -167,15 +167,6 @@ This section is structured around the core engineering challenges our team solve
 *   **Challenge (Lateral Control):** The most critical challenge was control oscillation during lane changes. An initial attempt caused the vehicle to "wiggle" as it tried to initiate new avoidance maneuvers while already performing one—a classic problem in robotics.
 *   **Solution (Lateral Control):** We engineered a formal state machine for lateral control. By defining three distinct states—`DEFAULT`, `CHANGING_LANE`, and `COOLDOWN`—we ensured the vehicle committed to a maneuver once initiated. The system would only re-evaluate its environment for a new lane change after the current one was fully completed and a brief cooldown period had passed for stabilization. This state-based architecture was the key to enabling clean, decisive, and safe high-speed lane changes.
 
-<div class="row justify-content-center">
-    <div class="col-sm-10 mt-3 mt-md-0">
-        {% include figure.liquid path="assets/img/autonomous_driving_avoidance_flowchart.png" title="Avoidance Algorithm Flowchart" class="img-fluid rounded z-depth-1" %}
-    </div>
-</div>
-<div class="caption">
-    Flowchart of our state-based lateral controller. This architecture was key to eliminating control oscillations and enabling deterministic, safe lane-change maneuvers.
-</div>
-
 ---
 
 ### **7. Results**
