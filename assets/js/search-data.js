@@ -44,18 +44,7 @@ ninja.data = [{
           handler: () => {
             window.location.href = "/cv/";
           },
-        },{id: "post-implicit-q-learning-iql-explained",
-        
-          title: "Implicit Q-Learning (IQL) Explained",
-        
-        description: "",
-        section: "Posts",
-        handler: () => {
-          
-            window.location.href = "/studies/2024/iql-review/";
-          
-        },
-      },{id: "books-the-godfather",
+        },{id: "books-the-godfather",
           title: 'The Godfather',
           description: "",
           section: "Books",handler: () => {
@@ -71,16 +60,26 @@ ninja.data = [{
             },},{id: "news-a-simple-inline-announcement-with-markdown-emoji-sparkles-smile",
           title: 'A simple inline announcement with Markdown emoji! :sparkles: :smile:',
           description: "",
-          section: "News",},{id: "projects-medi",
+          section: "News",},{id: "projects-fully-automated-hot-dog-vending-machine",
+          title: 'Fully automated hot dog vending machine',
+          description: "",
+          section: "Projects",handler: () => {
+              window.location.href = "/projects/Fully%20automated%20hot%20dog%20vending%20machineTAMP%20copy/";
+            },},{id: "projects-robust-hierarchical-planning-with-meanflow-dtamp",
+          title: 'Robust Hierarchical Planning with Meanflow-DTAMP',
+          description: "Developing a high-speed planning system using one-step sampling and latent representation analysis for complex manipulation.",
+          section: "Projects",handler: () => {
+              window.location.href = "/projects/Real-time_replanning_with_Meanflow_DTAMP/";
+            },},{id: "projects-medi",
           title: 'MEDi',
           description: "An AI-driven platform to help visually impaired individuals identify pharmaceutical products.",
           section: "Projects",handler: () => {
               window.location.href = "/projects/medi_app/";
-            },},{id: "projects-passionate-pet-lover",
-          title: 'Passionate Pet Lover',
-          description: "Daily Pet Care Management Platform",
+            },},{id: "projects-planning-with-flowmatching",
+          title: 'Planning with Flowmatching',
+          description: "Optimizing real-time robotic control by transitioning from Diffusion to Flow Matching to reduce sampling steps and analyze dynamics errors.",
           section: "Projects",handler: () => {
-              window.location.href = "/projects/passionate_pet_lover/";
+              window.location.href = "/projects/planning_with_flowmatching/";
             },},{id: "projects-unmanned-orchard-robot",
           title: 'Unmanned Orchard Robot',
           description: "Vision-Based Autonomous Guidance and Yield Monitoring",
