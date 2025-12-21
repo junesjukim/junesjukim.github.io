@@ -65,9 +65,9 @@ ninja.data = [{
           description: "",
           section: "Projects",handler: () => {
               window.location.href = "/projects/Fully%20automated%20hot%20dog%20vending%20machineTAMP%20copy/";
-            },},{id: "projects-robust-hierarchical-planning-with-meanflow-dtamp",
-          title: 'Robust Hierarchical Planning with Meanflow-DTAMP',
-          description: "Developing a high-speed planning system using one-step sampling and latent representation analysis for complex manipulation.",
+            },},{id: "projects-robust-replanning-integrating-mean-flow-with-dtamp",
+          title: 'Robust Replanning Integrating Mean Flow with DTAMP',
+          description: "Overcoming dynamics hallucination in long-horizon manipulation by integrating Mean Flow, Flow matching with DTAMP-based replanning strategies.",
           section: "Projects",handler: () => {
               window.location.href = "/projects/Real-time_replanning_with_Meanflow_DTAMP/";
             },},{id: "projects-medi",
