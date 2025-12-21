@@ -4,7 +4,7 @@ title: MEDi
 description: An AI-driven platform to help visually impaired individuals identify pharmaceutical products.
 img: assets/img/medi_app/MEDi_logo.jpeg
 importance: 2
-category: work
+category: personal
 ---
 
 Project Link: [https://github.com/2nd-Company/MEDi](https://github.com/2nd-Company/MEDi)
