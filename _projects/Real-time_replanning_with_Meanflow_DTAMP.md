@@ -126,7 +126,7 @@ To diagnose planning reliability, I visualized the goal embeddings using UMAP. T
 ---
 
 ### **5. Insights & Contributions**
-#### **5.1 Robustness via Closed-Loop Replanning**
+#### **5.1 Robustness via Replanning**
 
 Insight: My experiments confirmed that in stochastic environments like Ogbench, open-loop planning is insufficient due to unpredictable dynamics errors.
 
@@ -134,7 +134,7 @@ Contribution: I introduced a milestone-based replanning framework that enables t
 
 #### **5.2 Topological Density for Policy Reachability**
 
-Insight: The success of hierarchical planning heavily depends on the "reachability" between sub-goals. Sparse milestones create "blind spots" where the low-level policy fails to find a feasible path to the next target.
+Insight: The success of hierarchical planning heavily depends on the reachability between sub-goals. Sparse milestones create blind spots where the low-level policy fails to find a feasible path to the next target.
 
 Contribution: I identified that milestone density is a critical factor for complex manipulation. By optimizing the target interval to generate denser milestones, I ensured that consecutive sub-goals remain within the local policy's reach, significantly improving task success rates.
 
