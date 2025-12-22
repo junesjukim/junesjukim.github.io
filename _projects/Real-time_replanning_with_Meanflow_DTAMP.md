@@ -103,24 +103,43 @@ In the challenging **Ogbench Cube-Double-Play** task, I analyzed the "Milestone 
 </div>
 
 #### **4.3 Embedding Space Analysis (UMAP)**
-[cite_start]To diagnose why certain tasks failed, I visualized the goal embeddings using UMAP. The visualization revealed that generated milestones (red dots) occasionally diverged from the manifold of valid trajectories (background point cloud), guiding the robot toward physically impossible states[cite: 398, 660].
+To diagnose planning reliability, I visualized the goal embeddings using UMAP. This analysis revealed a stark contrast between environments:
 
-#### 4.3 Embedding Space Analysis (UMAP)
-[cite_start]To diagnose why certain tasks failed, I visualized the goal embeddings using UMAP. The visualization revealed that generated milestones (red dots) occasionally diverged from the manifold of valid trajectories (background point cloud), guiding the robot toward physically impossible states[cite: 398, 660].
+* **Franka Kitchen (Success):** The manifold structure was distinct, allowing for clear verification of generated milestones and trajectories.
+* **Ogbench (Challenge):** Unlike Kitchen, verifying milestone tracking in **Ogbench** was significantly more difficult. While local behaviors appeared consistent with physical laws (i.e., the milestone state converged as the actual state approached the target), the **global UMAP visualization failed to capture these relationships distinctly**. This ambiguity made it difficult to confirm visually whether the robot was truly "moving towards" the generated milestones, necessitating more robust verification methods like the Observation Decoder.
 
 <div class="row justify-content-center">
-    <div class="col-sm-8 mt-3 mt-md-0">
-        {% include figure.liquid path="assets/img/umap_embedding.png" title="UMAP Visualization" class="img-fluid rounded z-depth-1" %}
+    <div class="col-sm-6 mt-3 mt-md-0">
+        {% include figure.liquid path="assets/img/dtamp_umap.png" title="Franka Kitchen UMAP" class="img-fluid rounded z-depth-1" %}
+        <div class="caption">
+            <strong>Franka Kitchen:</strong> Clear trajectory alignment on the manifold.
+        </div>
     </div>
-</div>
-<div class="caption">
-    [cite_start]UMAP visualization of goal embeddings. Red trajectory points show the planned milestones overlayed on the learned latent space of the task[cite: 660].
+    <div class="col-sm-6 mt-3 mt-md-0">
+        {% include figure.liquid path="assets/img/dtamp_umap_og.png" title="Ogbench UMAP" class="img-fluid rounded z-depth-1" %}
+        <div class="caption">
+            <strong>Ogbench:</strong> Ambiguous global structure despite local consistency.
+        </div>
+    </div>
 </div>
 
 ---
 
 ### **5. Insights & Contributions**
+#### **5.1 Robustness via Closed-Loop Replanning**
 
-* **Necessity of Replanning:** [cite_start]My experiments confirmed that in stochastic environments like Ogbench, open-loop planning is insufficient. The introduction of milestone-based replanning allowed the robot to recover from grasping failures that previously caused episode termination[cite: 494, 651].
-* **Density of Milestones:** [cite_start]I found that the success of DTAMP heavily relies on the density of milestones. Sparse milestones led to "blind spots" where the local policy could not find a path to the next sub-goal. Increasing milestone density proved essential for complex manipulation tasks[cite: 496, 497].
-* **Advantage of Deterministic Sampling:** [cite_start]Switching to Mean Flow allowed for faster, deterministic sampling. This efficiency is critical for replanning, as the robot must generate new trajectories in real-time without the computational overhead of stochastic diffusion steps[cite: 513].
+Insight: My experiments confirmed that in stochastic environments like Ogbench, open-loop planning is insufficient due to unpredictable dynamics errors.
+
+Contribution: I introduced a milestone-based replanning framework that enables the robot to dynamically recover from execution failures (e.g., grasping errors). By monitoring trajectory deviation in real-time, the system triggers replanning to correct the path, preventing episodes from terminating prematurely.
+
+#### **5.2 Topological Density for Policy Reachability**
+
+Insight: The success of hierarchical planning heavily depends on the "reachability" between sub-goals. Sparse milestones create "blind spots" where the low-level policy fails to find a feasible path to the next target.
+
+Contribution: I identified that milestone density is a critical factor for complex manipulation. By optimizing the target interval to generate denser milestones, I ensured that consecutive sub-goals remain within the local policy's reach, significantly improving task success rates.
+
+#### **5.3 Real-Time Feasibility with Mean Flow**
+
+Insight: Effective replanning requires generating new trajectories almost instantly, which is computationally prohibitive with standard stochastic diffusion models.
+
+Contribution: I transitioned the generative backbone to Mean Flow, enabling deterministic 1-step sampling. This architectural shift drastically reduced inference latency, allowing the robot to generate high-fidelity trajectories in real-time without the computational overhead of iterative diffusion steps.
