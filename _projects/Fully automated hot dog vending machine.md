@@ -32,7 +32,7 @@ Participating in the **3rd SNU x Hansot Food Service Startup Competition**, our 
 
 ---
 
-### **2. The Challenge: The "High-Risk" Franchise Model**
+### **2. The Challenge: The High-Risk Franchise Model**
 
 The traditional F&B franchise industry faces a "triple threat" that hinders sustainable expansion:
 
