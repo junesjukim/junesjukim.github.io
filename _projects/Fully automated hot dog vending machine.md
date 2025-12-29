@@ -8,14 +8,17 @@ category: personal
 ---
 
 
-<div class="row justify-content-sm-center mt-3">
-  <div class="col-sm-6 mt-3 mt-md-0">
-    {% include figure.liquid path="/assets/img/chefbox_demo.jpg" title="demo1" class="img-fluid rounded z-depth-1" %}
-  </div>
-  
-  <div class="col-sm-6 mt-3 mt-md-0">
-    {% include figure.liquid path="/assets/img/chefbox_demo2.jpg" title="demo2" class="img-fluid rounded z-depth-1" %}
-  </div>
+<div class="row justify-content-center">
+    <div class="col-sm-6 mt-3 mt-md-0">
+        {% include figure.liquid path="assets/img/chefbox_demo.jpg" title="Franka Kitchen UMAP" class="img-fluid rounded z-depth-1" %}
+        <div class="caption">
+        </div>
+    </div>
+    <div class="col-sm-6 mt-3 mt-md-0">
+        {% include figure.liquid path="assets/img/chefbox_demo2.jpg" title="Ogbench UMAP" class="img-fluid rounded z-depth-1" %}
+        <div class="caption">
+        </div>
+    </div>
 </div>
 <div align="center">
   <h2>Subscription-based Modular Unmanned Store Service</h2>
