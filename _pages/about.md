@@ -24,13 +24,16 @@ latest_posts:
   limit: 3 # leave blank to include all the blog posts
 ---
 
-I am passionate about developing intelligent systems that solve real-world problems.
+I bridge the gap between intelligent robotics and real-world application.
 
-As an <strong>engineer</strong> and <strong>researcher</strong>, I explore:
-* Robotic Learning: Investigating novel methods like Flow-Matching for intelligent agent control.
-* Robotic Perception: Fusing sensor data like LiDAR and Depth Cameras for robust autonomous navigation.
-* On-device & Edge AI: Building efficient, real-world models for applications in accessibility and retail.
+As an engineer and researcher, I specialize in:
 
-Currently, I am a <strong>research assistant</strong> at SNU's RLLAB and a <strong>software engineer</strong> at 2nd Company, where I build accessibility tools for the visually impaired.
+* Robotic Learning: Investigating novel control methods like Flow-Matching for intelligent agents.
 
-I am a <strong>junior</strong> at Seoul National University. My academic diligence has been recognized through scholarships such as the <strong>Dongwon Development Fund Scholarship</strong> and the <strong>SNU Academic Scholarship</strong>.
+* Robotic Perception: Fusing multi-modal sensor data (LiDAR, Depth Cameras) for robust autonomous navigation.
+
+* On-device & Edge AI: Optimizing efficient models for practical applications in accessibility and retail.
+
+I sharpened these technical synergies as a Research Assistant at SNU's RLLAB and a Software Engineer at 2nd Company, where I develop accessibility tools for the visually impaired.
+
+I am a Junior at Seoul National University. My commitment to academic excellence has been recognized through the Dongwon Development Fund Scholarship and the SNU Academic Scholarship.
