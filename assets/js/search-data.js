@@ -60,11 +60,11 @@ ninja.data = [{
             },},{id: "news-a-simple-inline-announcement-with-markdown-emoji-sparkles-smile",
           title: 'A simple inline announcement with Markdown emoji! :sparkles: :smile:',
           description: "",
-          section: "News",},{id: "projects-fully-automated-hot-dog-vending-machine",
-          title: 'Fully automated hot dog vending machine',
-          description: "",
+          section: "News",},{id: "projects-chefbox",
+          title: 'ChefBox',
+          description: "Subscription-based Modular Unmanned Store Service minimizing Franchise Expansion Risk",
           section: "Projects",handler: () => {
-              window.location.href = "/projects/Fully%20automated%20hot%20dog%20vending%20machineTAMP%20copy/";
+              window.location.href = "/projects/Fully%20automated%20hot%20dog%20vending%20machine/";
             },},{id: "projects-replanning-integrating-mean-flow-with-dtamp",
           title: 'Replanning Integrating Mean Flow with DTAMP',
           description: "Overcoming dynamics hallucination in long-horizon manipulation by integrating Mean Flow, Flow matching with DTAMP-based replanning strategies.",
