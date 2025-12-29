@@ -2,7 +2,7 @@
 layout: page
 permalink: /studies/
 title: studies
-nav: true
+nav: False
 nav_order: 4
 pagination:
   enabled: true

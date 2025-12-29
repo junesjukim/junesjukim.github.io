@@ -2,7 +2,7 @@
 layout: about
 title: about
 permalink: /
-subtitle: Reinforcement Learning, Robotics, On-device AI, Computer Vision, Startups.
+subtitle: Robot Learning, Generative Control, Multi-modal Perception, Edge AI
 
 profile:
   align: right
