@@ -36,25 +36,25 @@ Achieving real-time control requires not only speed but also physical precision.
 
 * **Inference Bottleneck (Speed):** Standard diffusion requires dozens of steps to transform noise into a valid trajectory. This latency disrupts the high-frequency feedback loops (50Hz+) required for responsive control.
 
-    <div class="row justify-content-center">
-        <div class="col-sm-8 mt-3 mt-md-0">
-            {% include figure.liquid path="assets/img/flow_sampling_step.png" title="Sampling Step Performance" class="img-fluid rounded z-depth-1" %}
-        </div>
+<div class="row justify-content-center">
+    <div class="col-sm-8 mt-3 mt-md-0">
+        {% include figure.liquid path="assets/img/flow_sampling_step.png" class="img-fluid rounded z-depth-1" %}
     </div>
-    <div class="caption">
-        Performance degradation in standard models: Reducing sampling steps drastically lowers success rates, highlighting the need for a more efficient generation method.
-    </div>
+</div>
+<div class="caption">
+    Performance degradation in standard models: Reducing sampling steps drastically lowers success rates, highlighting the need for a more efficient generation method.
+</div>
 
 * **Dynamics Instability & Error (Performance):** In partially observable and high-dimensional tasks (e.g., Franka Kitchen), small prediction errors compound over time. My analysis revealed that standard velocity-based prediction often fails to capture stable dynamics, leading to "shaky" motion and task failure after a certain horizon.
 
-    <div class="row justify-content-center">
-        <div class="col-sm-8 mt-3 mt-md-0">
-            {% include figure.liquid path="assets/img/flow_dynamics_error.png" title="Dynamics Error Analysis" class="img-fluid rounded z-depth-1" %}
-        </div>
+<div class="row justify-content-center">
+    <div class="col-sm-8 mt-3 mt-md-0">
+        {% include figure.liquid path="assets/img/flow_dynamics_error.png" title="Dynamics Error Analysis" class="img-fluid rounded z-depth-1" %}
     </div>
-    <div class="caption">
-        Dynamics error analysis showing a critical spike in prediction error after approx. 100 steps. This necessitated robust guidance and replanning strategies.
-    </div>
+</div>
+<div class="caption">
+    Dynamics error analysis showing a critical spike in prediction error after approx. 100 steps. This necessitated robust guidance and replanning strategies.
+</div>
 ---
 
 ### **3. Methodology: Transition to Flow Matching**
