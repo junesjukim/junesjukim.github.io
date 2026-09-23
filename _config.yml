@@ -250,8 +250,6 @@ jekyll-archives:
       year: "/studies/:year/"
       tags: "/studies/:type/:name/"
       categories: "/studies/:type/:name/"
-  books:
-    enabled: [year, tags, categories] # enables year, tag and category archives (remove if you need to disable one of them).
 
 # The blog button should not be removed.
 display_categories: [paper reviews, startup]
