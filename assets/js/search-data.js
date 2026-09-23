@@ -3,84 +3,40 @@ const ninja = document.querySelector('ninja-keys');
 
 // add the home and posts menu items
 ninja.data = [{
-    id: "nav-about",
-    title: "about",
+    id: "nav-home",
+    title: "Home",
     section: "Navigation",
     handler: () => {
       window.location.href = "/";
     },
-  },{id: "nav-projects",
-          title: "projects",
-          description: "",
-          section: "Navigation",
-          handler: () => {
-            window.location.href = "/projects/";
-          },
-        },{id: "nav-publications",
-          title: "publications",
-          description: "",
-          section: "Navigation",
-          handler: () => {
-            window.location.href = "/publications/";
-          },
-        },{id: "nav-repos",
-          title: "repos",
-          description: "selected",
-          section: "Navigation",
-          handler: () => {
-            window.location.href = "/repositories/";
-          },
-        },{id: "nav-cv",
-          title: "cv",
-          description: "",
-          section: "Navigation",
-          handler: () => {
-            window.location.href = "/cv/";
-          },
-        },{id: "books-the-godfather",
-          title: 'The Godfather',
-          description: "",
-          section: "Books",handler: () => {
-              window.location.href = "/books/the_godfather/";
-            },},{id: "news-a-simple-inline-announcement",
-          title: 'A simple inline announcement.',
-          description: "",
-          section: "News",},{id: "news-a-long-announcement-with-details",
-          title: 'A long announcement with details',
-          description: "",
-          section: "News",handler: () => {
-              window.location.href = "/news/announcement_2/";
-            },},{id: "news-a-simple-inline-announcement-with-markdown-emoji-sparkles-smile",
-          title: 'A simple inline announcement with Markdown emoji! :sparkles: :smile:',
-          description: "",
-          section: "News",},{id: "projects-chefbox",
-          title: 'ChefBox',
-          description: "Subscription-based Modular Unmanned Store Service minimizing Franchise Expansion Risk",
-          section: "Projects",handler: () => {
-              window.location.href = "/projects/Fully%20automated%20hot%20dog%20vending%20machine/";
-            },},{id: "projects-replanning-integrating-mean-flow-with-dtamp",
-          title: 'Replanning Integrating Mean Flow with DTAMP',
-          description: "Overcoming dynamics hallucination in long-horizon manipulation by integrating Mean Flow, Flow matching with DTAMP-based replanning strategies.",
+  },{id: "projects-mean-flow-dtamp",
+          title: 'Mean Flow × DTAMP',
+          description: "Real-time milestone replanning for long-horizon manipulation with one-step Mean Flow sampling inside DTAMP.",
           section: "Projects",handler: () => {
               window.location.href = "/projects/Real-time_replanning_with_Meanflow_DTAMP/";
+            },},{id: "projects-chefbox",
+          title: 'ChefBox',
+          description: "Subscription-based modular unmanned store service that lowers franchise expansion risk.",
+          section: "Projects",handler: () => {
+              window.location.href = "/projects/chefbox/";
             },},{id: "projects-medi",
           title: 'MEDi',
-          description: "An AI-driven platform to help visually impaired individuals identify pharmaceutical products.",
+          description: "On-device AI that helps visually impaired people identify pharmaceutical products.",
           section: "Projects",handler: () => {
               window.location.href = "/projects/medi_app/";
-            },},{id: "projects-planning-with-flowmatching",
-          title: 'Planning with Flowmatching',
-          description: "Optimizing real-time robotic control by transitioning from Diffusion to Flow Matching to reduce sampling steps and analyze dynamics errors.",
+            },},{id: "projects-flow-matching-diffuser",
+          title: 'Flow Matching × Diffuser',
+          description: "Flow matching in Diffuser for faster, more stable trajectory planning.",
           section: "Projects",handler: () => {
               window.location.href = "/projects/planning_with_flowmatching/";
             },},{id: "projects-unmanned-orchard-robot",
           title: 'Unmanned Orchard Robot',
-          description: "Vision-Based Autonomous Guidance and Yield Monitoring",
+          description: "Vision-based autonomous guidance and yield monitoring for orchards.",
           section: "Projects",handler: () => {
               window.location.href = "/projects/unmanned_orchard_robot/";
             },},{id: "projects-urban-autonomous-racing",
           title: 'Urban Autonomous Racing',
-          description: "Building and racing a fully autonomous vehicle, focusing on robust state-based control systems and a custom perception data engine.",
+          description: "Building and racing a fully autonomous vehicle with state-based control and a custom perception data engine.",
           section: "Projects",handler: () => {
               window.location.href = "/projects/urban_autonomous_racing/";
             },},{
