@@ -1,0 +1,28 @@
+---
+layout: base
+title: Projects
+permalink: /projects/
+description: Research, robotics, and product projects in robot learning, autonomy, and on-device AI.
+---
+
+<div class="container narrow">
+  <header class="page-head">
+    <h1 class="page-title">Projects</h1>
+    <p class="page-lead">Research, robots, and products I've built. Each page has a short summary, and the full technical write-up is at the bottom.</p>
+  </header>
+
+  <section class="block">
+    <h2 class="sec-title">Research</h2>
+    {% include project_grid.liquid kind="Research" %}
+  </section>
+
+  <section class="block">
+    <h2 class="sec-title">Robotics</h2>
+    {% include project_grid.liquid kind="Robotics" %}
+  </section>
+
+  <section class="block">
+    <h2 class="sec-title">Products &amp; Ventures</h2>
+    {% include project_grid.liquid kind="Product" %}
+  </section>
+</div>

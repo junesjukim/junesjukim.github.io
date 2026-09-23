@@ -1,323 +1,114 @@
 ---
-layout: page
+layout: project
 title: Unmanned Orchard Robot
-description: Vision-Based Autonomous Guidance and Yield Monitoring
-img: assets/img/unmanned_orchard_hardware_1.jpg
+tagline: A low-cost ROS robot that navigates GPS-denied orchard rows and maps healthy and diseased fruit in real time.
+description: Vision-based autonomous guidance and yield monitoring for orchards.
+kind: Robotics
 importance: 3
-category: work
+thumb: /assets/img/thumbs/orchard-robot.jpg
+context: Agricultural Robot Competition, Rural Development Administration
+recognition: Grand Prize
+award: Grand Prize
+stack: [ROS Melodic, GMapping SLAM, YOLOv5n, Jetson Nano, RPLiDAR]
+hero:
+  video: /assets/img/unmanned_orchard_full_demo.mp4
+  caption: Full autonomous run with navigation, detection, and mapping.
+highlights:
+  - "**LiDAR SLAM** (GMapping) with wheel odometry to navigate under dense canopy with no GPS."
+  - "YOLOv5n tuned for the Jetson Nano: **97% test accuracy** on tree, healthy fruit, and diseased fruit."
+  - "A **diversity-first dataset** built from systematic distance, angle, and lighting sweeps with bias correction, then fine-tuned on competition data."
+  - "**Three hardware iterations** on camera placement to get complete fruit counts."
 ---
 
-<div class="row justify-content-center">
-    <div class="col-sm-8 mt-3 mt-md-0">
-        {% include figure.liquid loading="eager" path="assets/img/unmanned_orchard_hardware_1.jpg" title="Unmanned Orchard Robot Hardware" class="img-fluid rounded z-depth-1" %}
-    </div>
-</div>
-<div class="caption">
-    The unmanned robot designed for autonomous orchard management and fruit monitoring.
-</div>
+### Problem
 
----
+Orchards are a hard place for a small robot. The canopy blocks GPS, rows are irregular and cluttered with obstacles, and light changes with time of day and weather. The competition, run by Korea's Rural Development Administration, asked teams to drive a mock orchard autonomously, find every tree, and report where the healthy and diseased fruit were. Our goal was to do this on a low-cost platform with only cameras and a 2D LiDAR.
 
-### **1. Overview**
+### System
 
-This project introduces a **ROS-based autonomous robot** designed for modernizing orchard management. By leveraging computer vision and SLAM, the robot can navigate orchard rows, monitor fruit growth status, and detect diseases in real-time. This system aims to solve critical challenges in precision agriculture, such as labor shortages and the need for timely data-driven interventions. Our key achievement was the development of a fully integrated platform that successfully performed these tasks in a complex environment, ultimately winning the **Grand Prize at the Agricultural Robot Competition** hosted by the Rural Development Administration of Korea.
+The robot is a TurtleBot3 Burger with the compute and sensors swapped out:
 
-<div class="row justify-content-center">
-    <div class="col-sm-10 mt-3 mt-md-0">
-        {% include video.liquid path="assets/img/unmanned_orchard_full_demo.mp4" class="img-fluid rounded z-depth-1" controls=true %}
-    </div>
-</div>
-<div class="caption">
-    Complete demonstration of the unmanned orchard robot in action, showcasing autonomous navigation and fruit detection capabilities.
-</div>
+| Component | Choice |
+|---|---|
+| Compute | NVIDIA Jetson Nano |
+| Navigation sensor | RPLiDAR A2M8 (2D LiDAR) |
+| Vision | 2 x Logitech C270 webcams |
+| Motor control | OpenCR 1.0 with Dynamixel motors |
+| Software | Ubuntu 18.04, ROS Melodic, GMapping, PyTorch, OpenCV |
 
----
+Navigation uses GMapping SLAM: the LiDAR maps tree trunks and obstacles, and wheel odometry from the Dynamixels keeps the pose estimate consistent between scans, so the robot can follow rows without GPS. While it drives, the detector runs on the camera streams and each detection is tied to the robot's position on the map.
 
-### **2. The Challenge: Precision Agriculture in Orchards**
-
-Orchard environments pose unique challenges for automation. 
-*   **GNSS-Denied Environment:** Dense canopies block GPS signals, making standard navigation methods unreliable.
-*   **Unstructured Terrain:** Irregular row spacing and scattered obstacles require robust perception and dynamic path planning.
-*   **Variable Conditions:** Fluctuating light and weather conditions demand a vision system that is resilient to change.
-
-<div class="row justify-content-center">
-    <div class="col-sm-8 mt-3 mt-md-0">
-        {% include figure.liquid path="assets/img/unmanned_orchard_environment.jpg" title="Challenging Orchard Environment" class="img-fluid rounded z-depth-1" %}
-    </div>
-</div>
-<div class="caption">
-    The real orchard environment presents major challenges for autonomous robots: deep tree shade, irregular terrain, various obstacles, and rapidly changing lighting conditions depending on time and weather. Overcoming these complexities was a core challenge of this project.
+<div class="fig-row">
+  <figure>
+    <img src="/assets/img/unmanned_orchard_hardware_overview.png" alt="Hardware block diagram: two RGB cameras to single board computer, OpenCR, Dynamixel wheels, LiDAR, battery" loading="lazy">
+    <figcaption>Hardware layout: cameras feed the Jetson Nano; the OpenCR board drives the wheels and powers the LiDAR.</figcaption>
+  </figure>
+  <figure>
+    <img src="/assets/img/unmanned_orchard_algorithm_overview.jpg" alt="Software flow: camera and LiDAR feed odometry, drive, and detection loop" loading="lazy">
+    <figcaption>Runtime loop: odometry, driving, and detection run together from start to finish.</figcaption>
+  </figure>
 </div>
 
-Our goal was to build a cost-effective robot that could reliably operate under these constraints using primarily vision and LiDAR sensors.
+Most of the hardware work went into the cameras. We rebuilt the camera mount three times, changing camera type, position, and tilt. Our first side-facing layout missed fruit in the middle of the tree and undercounted; the final version mounts both webcams higher with a tilt chosen to cover the canopy, which gave complete counts.
 
----
-
-### **3. System Architecture & Hardware**
-
-#### **3.1 System Overview (Hardware & Software Stack)**
-
-The robot is built on a modular hardware and software architecture to ensure flexibility and robustness.
-
-<div class="row justify-content-sm-center">
-    <div class="col-sm-5 mt-3 mt-md-0">
-        {% include figure.liquid path="assets/img/unmanned_orchard_hardware_overview.png" title="Hardware Architecture Overview" class="img-fluid rounded z-depth-1" %}
-    </div>
-    <div class="col-sm-5 mt-3 mt-md-0">
-        {% include figure.liquid path="assets/img/unmanned_orchard_algorithm_overview.jpg" title="Algorithmic System Overview" class="img-fluid rounded z-depth-1" %}
-    </div>
-</div>
-<div class="caption">
-    **Left:** Hardware architecture overview showing system components and their interconnections. **Right:** Algorithmic workflow demonstrating the integration of SLAM navigation and computer vision for autonomous orchard management.
+<div class="fig-row">
+  <figure>
+    <img src="/assets/img/unmanned_orchard_hardware_v1.jpg" alt="First prototype with ribbon-cable cameras" loading="lazy">
+    <figcaption>Stage 1 prototype.</figcaption>
+  </figure>
+  <figure>
+    <img src="/assets/img/unmanned_orchard_hardware_v2.jpg" alt="Second prototype with repositioned cameras" loading="lazy">
+    <figcaption>Stage 2: cameras repositioned.</figcaption>
+  </figure>
+  <figure>
+    <img src="/assets/img/unmanned_orchard_hardware_2.jpg" alt="Competition robot with two Logitech webcams mounted high" loading="lazy">
+    <figcaption>Stage 3: the competition build.</figcaption>
+  </figure>
 </div>
 
-*   **Hardware Stack**:
-    *   **Chassis**: TurtleBot3 Burger
-    *   **Single Board Computer**: NVIDIA Jetson Nano
-    *   **Primary Sensor (SLAM)**: RPLiDAR A2M8 2D LiDAR
-    *   **Vision Sensors**: 2 x Logitech C270 Webcams
-    *   **Controller**: OpenCR 1.0 with Dynamixel motors
+### Data
 
-*   **Software Stack**:
-    *   **OS**: Ubuntu 18.04
-    *   **Framework**: Robot Operating System (ROS1) Melodic
-    *   **Key Libraries**: `GMapping` for SLAM, `PyTorch` for deep learning, `OpenCV` for image processing.
+The detector has three classes: tree, healthy fruit, and diseased fruit. Rather than collecting as many images as possible, we planned the lab dataset as a sweep: every combination of 0–5 healthy and 0–2 diseased fruit, at 3 camera distances and 10 angles, with the fruit repositioned once. We then checked it for bias and patched the gaps:
 
-#### **3.2 Hardware Iterations (Three Stages)**
+- **Scale.** Most fruit appeared small, so we added close-up shots (30 images across healthy/diseased count combinations).
+- **Viewpoint.** 180-degree rotations with repositioning, so the model does not depend on a frontal view.
+- **Lighting.** Deliberate variation in lighting and camera settings.
 
-Throughout development, the robot's hardware was iteratively upgraded—primarily adjusting the camera type, position, and orientation to achieve **more accurate fruit counting**.
+The final lab set had 786 images. We added 345 images from the competition environment to adapt to the real cameras and lighting.
 
-<div class="row justify-content-sm-center mt-2">
-  <div class="col-sm-4 mt-3 mt-md-0">
-    {% include figure.liquid path="assets/img/unmanned_orchard_hardware_v1.jpg" title="Stage 1 – Initial Side-View Prototype" class="img-fluid rounded z-depth-1" %}
-  </div>
-  <div class="col-sm-4 mt-3 mt-md-0">
-    {% include figure.liquid path="assets/img/unmanned_orchard_hardware_v2.jpg" title="Stage 2 – Field Prototype" class="img-fluid rounded z-depth-1" %}
-  </div>
-  <div class="col-sm-4 mt-3 mt-md-0">
-    {% include figure.liquid path="assets/img/unmanned_orchard_hardware_2.jpg" title="Stage 3 – Competition-Ready" class="img-fluid rounded z-depth-1" %}
-  </div>
+<figure>
+  <video src="/assets/img/unmanned_orchard_dataset_collection.mp4" autoplay muted loop playsinline controls preload="metadata"></video>
+  <figcaption>Collecting the lab dataset by sweeping distance and angle around a staged tree.</figcaption>
+</figure>
+
+### Model
+
+We started with YOLOv5s on COCO-pretrained weights and moved to YOLOv5n so it would run in real time on the Jetson Nano. Training ran for 200 epochs with early stopping off, keeping the best checkpoint, and used YOLOv5's automatic anchor fitting and mosaic augmentation. The model reached 97% accuracy on the test set. Per-class recall on the validation set was 1.00 for trees, 0.99 for healthy fruit, and 0.97 for diseased fruit, and F1 across all classes peaked at 0.99 at a confidence threshold of 0.677.
+
+<div class="fig-row">
+  <figure>
+    <img src="/assets/img/unmanned_orchard_confusion_matrix.png" alt="Normalized confusion matrix for tree, fruit, and sick fruit classes" loading="lazy">
+    <figcaption>Normalized confusion matrix. Most remaining errors are background false positives.</figcaption>
+  </figure>
+  <figure>
+    <img src="/assets/img/unmanned_orchard_confidence_matrix.png" alt="F1 versus confidence curve per class" loading="lazy">
+    <figcaption>F1 against confidence threshold, per class and overall.</figcaption>
+  </figure>
 </div>
 
-* **Stage 1 – Initial Side-View Prototype:** Two low-cost webcams mounted on the left and right sides of the chassis, providing only side-facing views of tree rows. This configuration was adequate for basic navigation tests but missed central fruits and therefore produced incomplete fruit-count statistics.
-* **Stage 2 – Field Prototype:** Dual stereo webcams angled downward and wider FOV; enabled depth estimation and better fruit localization while upgrading compute to Jetson Nano.
-* **Stage 3 – Competition-Ready:** High-resolution cameras re-mounted higher with optimized tilt for canopy coverage; refined LiDAR placement, ruggedized enclosure, and full sensor calibration for precise, consistent fruit counting in real orchards.
+### Results
 
----
+In the competition's mock orchard, the robot drove the rows on its own, detected every target tree, and produced a position map of healthy and diseased fruit. The project won the Grand Prize at the 60th-anniversary Agricultural Robot Competition.
 
-### **4. Dataset Collection & Preparation Strategy**
+<figure>
+  <video src="/assets/img/unmanned_orchard_ai_detection_2.mp4" autoplay muted loop playsinline controls preload="metadata"></video>
+  <figcaption>On-board detections of trees, healthy fruit, and diseased fruit on the Jetson Nano.</figcaption>
+</figure>
 
-To develop a robust fruit detection system, we implemented a systematic and comprehensive dataset preparation strategy that emphasized diversity and bias reduction.
+### Takeaways
 
-<div class="row justify-content-sm-center">
-    <div class="col-sm-5 mt-3 mt-md-0">
-        {% include video.liquid path="assets/img/unmanned_orchard_dataset_collection.mp4" class="img-fluid rounded z-depth-1" controls=true %}
-    </div>
-    <div class="col-sm-5 mt-3 mt-md-0">
-        {% include video.liquid path="assets/img/unmanned_orchard_dataset.mp4" class="img-fluid rounded z-depth-1" controls=true %}
-    </div>
-</div>
-<div class="caption">
-    **Left:** Dataset collection process showing systematic data capture from multiple angles and distances. **Right:** Overview of the diverse dataset including different fruit conditions and environmental scenarios.
-</div>
+- **Plan the dataset.** A small dataset designed around distance, angle, count, and lighting, then audited for bias, beat simply collecting more. A model trained only on lab data outperformed one trained on mixed lab and competition data.
+- **Camera geometry is part of the model.** Changing the camera's frame width changed the proportions of targets in the image, and we had to retrain. Rotation augmentation needed care too, since trees are strongly vertical.
+- **The edge device sets the architecture.** The Jetson Nano's budget decided the move from YOLOv5s to YOLOv5n.
 
-#### **4.1 Initial Laboratory Dataset (793 images)**
-We first created a controlled dataset in our laboratory environment to establish baseline performance:
-- **Fruit Combinations**: Healthy fruits (0-5), Diseased fruits (0-2)
-- **Distance Variations**: 3 different camera-to-tree distances
-- **Angular Coverage**: 10 different angles per setup
-- **Position Adjustments**: Complete fruit repositioning for 2x variation
-- **Total Systematic Combinations**: 6×3×3×10×2 = 1,080 planned images
-
-<div class="row justify-content-center">
-    <div class="col-sm-8 mt-3 mt-md-0">
-        {% include figure.liquid loading="eager" path="assets/img/unmanned_orchard_yolov5_mosaicaugmentation.jpg" title="YOLOv5 Mosaic Augmentation Example" class="img-fluid rounded z-depth-1" %}
-    </div>
-</div>
-<div class="caption">
-    Example of YOLOv5's Mosaic Augmentation technique applied to our orchard dataset, combining multiple images to increase training robustness.
-</div>
-
-#### **4.2 Bias Reduction Strategies**
-To address potential data biases, we implemented several corrective measures:
-
-**1) Scale Bias Correction**: Added close-up fruit images to counteract the bias toward small-scale fruits
-   - Healthy fruits: 2, 1, 0 configurations
-   - Diseased fruits: 4, 3, 2, 1, 0 configurations  
-   - 2 images per configuration: 3×5×2 = 30 additional images
-
-<div class="row justify-content-sm-center mt-2">
-    <div class="col-sm-5 mt-3 mt-md-0">
-        {% include figure.liquid path="assets/img/unmanned_orchard_scaled_dataset.jpg" title="Scale Bias Correction - Various Fruit Scales" class="img-fluid rounded z-depth-1" %}
-    </div>
-    <div class="col-sm-5 mt-3 mt-md-0">
-        {% include figure.liquid path="assets/img/unmanned_orchard_scaled_dataset_2.jpg" title="Close-up Dataset Examples" class="img-fluid rounded z-depth-1" %}
-    </div>
-</div>
-<div class="caption">
-    **Left:** Examples of various fruit scales in the dataset showing different distances and sizes to reduce scale bias. **Right:** Close-up fruit images added to counteract small-scale bias, featuring different configurations of healthy and diseased fruits.
-</div>
-
-**2) Angular Diversity**: 180-degree rotation captures with repositioning to handle non-frontal detection scenarios
-
-**3) Environmental Adaptation**: Systematic variation in lighting conditions and camera settings
-
-<div class="row justify-content-sm-center mt-2">
-    <div class="col-sm-5 mt-3 mt-md-0">
-        {% include figure.liquid path="assets/img/unmanned_orchard_robot_view_1.jpg" title="Robot View – Environmental Lighting" class="img-fluid rounded z-depth-1" %}
-    </div>
-    <div class="col-sm-5 mt-3 mt-md-0">
-        {% include figure.liquid path="assets/img/unmanned_orchard_robot_view_2.jpg" title="Robot View – Obstacle Scenario" class="img-fluid rounded z-depth-1" %}
-    </div>
-</div>
-<div class="caption">
-    **Left:** Robot camera view illustrating challenging lighting conditions during operation. **Right:** Robot perspective showcasing obstacles and irregular terrain, emphasizing the need for robust environmental adaptation strategies.
-</div>
-
-**Final Lab Dataset**: 786 images with rich diversity and minimal bias
-
-#### **4.3 Competition Environment Adaptation (345 images)**
-- **Transfer Learning Strategy**: Used lab dataset for pre-training, then fine-tuned with competition environment data
-- **Camera-Specific Tuning**: Adapted to actual camera specifications, lighting, and field conditions
-- **Validation**: Lab-only model (best.pt) outperformed mixed-data model, confirming our diversity-first approach
-
----
-
-### **5. Model Development & Optimization**
-
-#### **5.1 Model Selection & Evolution**
-
-<div class="row justify-content-sm-center align-items-stretch">
-    <div class="col-sm-5 mt-3 mt-md-0 d-flex">
-        <div class="w-100">
-            {% include figure.liquid path="assets/img/unmanned_orchard_train_result.jpg" title="Training Results Comparison" class="img-fluid rounded z-depth-1" %}
-        </div>
-    </div>
-    <div class="col-sm-5 mt-3 mt-md-0 d-flex">
-        <div class="w-100">
-            {% include figure.liquid path="assets/img/unmanned_orchard_confidence_matrix.png" title="Model Confidence Analysis" class="img-fluid rounded z-depth-1" %}
-        </div>
-    </div>
-</div>
-<div class="caption">
-    **Left:** Comprehensive training results showing loss curves and performance metrics across different model iterations. **Right:** Model confidence analysis demonstrating prediction reliability and uncertainty quantification across different classes.
-</div>
-
-**Model Evolution Process:**
-1. **Initial Model**: YOLOv5s with pretrained COCO weights
-2. **Optimization**: Transitioned to YOLOv5n for Jetson Nano compatibility
-3. **Transfer Learning**: Leveraged ImageNet and COCO pretrained weights over random initialization
-4. **Edge Optimization**: Model specifically tuned for real-time inference on edge hardware
-
-#### **5.2 Training Strategy**
-- **Epochs**: 200 epochs with best model checkpoint saving
-- **Early Stopping**: Disabled to ensure complete training convergence
-- **Anchor Optimization**: YOLOv5's automatic anchor optimization using K-means and genetic algorithms
-- **Auto-Scaling**: Automatic image size normalization for robust performance
-
-<div class="row justify-content-center">
-    <div class="col-sm-6 mt-3 mt-md-0">
-        {% include figure.liquid loading="eager" path="assets/img/unmanned_orchard_confusion_matrix.png" title="Model Performance - Confusion Matrix" class="img-fluid rounded z-depth-1" %}
-    </div>
-</div>
-<div class="caption">
-    Confusion matrix showing excellent classification performance across all three classes: Tree, Healthy Fruit (정상과), and Diseased Fruit (질병과).
-</div>
-
-#### **5.3 Technical Insights**
-- **Bounding Box Adaptation**: Camera width changes required retraining due to target proportion variations
-- **Rotation Sensitivity**: Simple rotation affected tree detection (vertical vs. horizontal orientation)
-- **Mosaic Augmentation**: Enhanced model robustness through YOLOv5's advanced data augmentation
-
----
-
-### **6. Core Technologies**
-
-#### **6.1 Autonomous Navigation with SLAM**
-To navigate without GPS, the robot uses the **GMapping SLAM** algorithm. The 2D LiDAR sensor scans the environment to build a map of tree trunks and other obstacles. This map, combined with wheel odometry data from the Dynamixel motors, allows the robot to accurately determine its position and navigate autonomously along the orchard rows.
-
-#### **6.2 Real-time Fruit Detection & Classification**
-Our YOLOv5n model performs real-time detection with the following specifications:
-- **Classes**: Tree, Healthy Fruit, Diseased Fruit
-- **Accuracy**: 97% on test dataset
-- **Inference Speed**: Optimized for Jetson Nano real-time processing
-- **Robustness**: Handles various lighting conditions and viewing angles
-
-<div class="row justify-content-sm-center">
-    <div class="col-sm-5 mt-3 mt-md-0">
-        {% include video.liquid path="assets/img/unmanned_orchard_ai_detection.mp4" class="img-fluid rounded z-depth-1" controls=true %}
-    </div>
-    <div class="col-sm-5 mt-3 mt-md-0">
-        {% include video.liquid path="assets/img/unmanned_orchard_ai_detection_2.mp4" class="img-fluid rounded z-depth-1" controls=true %}
-    </div>
-</div>
-<div class="caption">
-    Real-time demonstration of the YOLOv5n model identifying healthy and diseased fruits with high accuracy, showing bounding boxes and classification confidence scores optimized for edge computing.
-</div>
-
----
-
-### **7. Results & Competition Success**
-
-The final integrated system was tested in a mock orchard environment. The robot successfully navigated the rows, detected all target trees, and created a position map of healthy and diseased fruits. The project's success was recognized with the **Grand Prize** at the 60th-anniversary Agricultural Robot Competition.
-
-<div class="row justify-content-center">
-    <div class="col-sm-8 mt-3 mt-md-0">
-        {% include figure.liquid loading="eager" path="assets/img/unmanned_orchard_competition_result.jpg" title="Competition Grand Prize Results" class="img-fluid rounded z-depth-1" %}
-    </div>
-</div>
-<div class="caption">
-    Grand Prize award at the 60th Anniversary Agricultural Robot Competition hosted by the Rural Development Administration of Korea.
-</div>
-
-<div class="row justify-content-center">
-    <div class="col-sm-10 mt-3 mt-md-0">
-        {% include video.liquid path="assets/img/unmanned_orchard_full_demo_2.mp4" class="img-fluid rounded z-depth-1" controls=true %}
-    </div>
-</div>
-<div class="caption">
-    Competition demonstration showing the complete autonomous mission including navigation, fruit detection, and mapping capabilities.
-</div>
-
-**Key Achievements:**
-- Successful autonomous navigation in GPS-denied environment
-- 97% accuracy in fruit and disease detection with systematic dataset preparation
-- Real-time processing on edge computing platform (Jetson Nano)
-- Robust performance under various lighting and weather conditions
-- Advanced data preparation strategy with bias reduction techniques
-- **Grand Prize** winner at national agricultural robotics competition
-
----
-
-### **8. Technical Contributions & Lessons Learned**
-
-**Data Science Contributions:**
-- Systematic dataset design methodology emphasizing diversity over quantity
-- Bias identification and mitigation strategies for agricultural computer vision
-- Transfer learning optimization for domain-specific applications
-- Edge computing model optimization maintaining high accuracy
-
-**Engineering Insights:**
-- Camera-specific retraining necessity for bounding box accuracy
-- Importance of angular diversity in agricultural object detection
-- Edge hardware constraints driving model architecture decisions
-- Integration challenges between SLAM navigation and computer vision systems
-
----
-
-### **9. Conclusion & Future Work**
-
-This project successfully demonstrated the feasibility of a low-cost, vision-based robot for orchard automation with a particular emphasis on rigorous data preparation and model optimization for edge computing environments.
-
-**Technical Contributions:**
-- Integration of SLAM navigation with computer vision for precision agriculture
-- Edge-optimized deep learning model with systematic dataset preparation
-- Robust system design for challenging outdoor environments
-- Comprehensive bias reduction methodology for agricultural AI
-
-**Potential next steps include:**
-*   Testing and fine-tuning the system in real-world orchard environments
-*   Integrating robotic manipulation for automated harvesting based on detection results
-*   Improving long-term localization robustness with visual-inertial SLAM
-*   Expanding detection capabilities to multiple fruit varieties and disease types
-*   Scaling dataset preparation methodology for larger agricultural applications 
+Next steps would be testing in a real orchard, adding a manipulator for harvesting, visual-inertial SLAM for more reliable long-run localization, and more fruit and disease types.

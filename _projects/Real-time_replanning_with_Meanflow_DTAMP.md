@@ -1,145 +1,85 @@
 ---
-layout: page
-title: Replanning Integrating Mean Flow with DTAMP
-description: Overcoming dynamics hallucination in long-horizon manipulation by integrating Mean Flow, Flow matching with DTAMP-based replanning strategies.
-img: assets/img/dtamp.png
+layout: project
+title: Mean Flow × DTAMP
+tagline: Real-time milestone replanning for long-horizon manipulation, using one-step Mean Flow sampling inside a hierarchical planner.
+description: Real-time milestone replanning for long-horizon manipulation with one-step Mean Flow sampling inside DTAMP.
+kind: Research
+year: 2025
 importance: 1
-category: work
+math: true
+thumb: /assets/img/thumbs/meanflow-dtamp.jpg
+role: Research intern
+context: SNU Robot Learning Lab, advised by Prof. Songhwai Oh
+stack: [PyTorch, Mean Flow, Flow Matching, DTAMP, OGBench, Franka Kitchen]
+hero:
+  video: /assets/img/dtamp_stats.mp4
+  caption: Multi-stage manipulation in OGBench, driven by generated milestones.
+highlights:
+  - Replaced iterative diffusion with **Mean Flow** for deterministic one-step milestone generation, making closed-loop replanning fast enough to run.
+  - Used **milestone-distance spikes** as a data-driven trigger to throw away a failing plan and regenerate milestones.
+  - With a single sampling step, Mean Flow scores **75** on Kitchen-Partial, above the 63.4 reported in the DTAMP paper.
+  - Trained an **observation decoder** that renders latent milestones as images, which showed that failures came from low-level execution rather than planning.
 ---
 
-<div class="row justify-content-center">
-    <div class="col-sm-10 mt-3 mt-md-0">
-        {% include video.liquid path="assets/img/dtamp_stats.mp4" class="img-fluid rounded z-depth-1" controls=true %}
-    </div>
-</div>
-<div class="caption">
-    Demonstration of the robot performing a multi-stage manipulation task in the Ogbench environment.
-</div>
+### Problem
 
----
+After working on flow-matching planners, I ran into their limits on long-horizon tasks in OGBench and Franka Kitchen. A standard Diffuser produces smooth trajectories but loses consistency over long horizons, so it often fails to chain sub-tasks such as opening a drawer and then grasping an object. Small dynamics errors accumulate, and an open-loop plan has no way to recover.
 
-### **1. Overview**
+DTAMP (Diffused Task-Agnostic Milestone Planner) addresses this by planning a sequence of latent milestones $g_{1:K}$ and replanning when they are missed. That only works if two things hold: sampling a new plan is fast enough to do inside the control loop, and there is a reliable signal for *when* to replan. Standard diffusion fails the first requirement, so most of this project was about both.
 
-Following my work on Flow Matching, I encountered significant limitations when scaling to long-horizon tasks in Ogbench and Franka Kitchen. While the standard Diffuser could produce smooth trajectories, it lacked long-term consistency, often failing to chain multiple sub-tasks (e.g., opening a drawer, then grasping an object).
+### Approach
 
-To address this, I pivoted to DTAMP (Diffused Task-Agnostic Milestone Planner), drawing inspiration from its ability to recover performance via replanning when milestones are missed. Which could compensate for the accumulating dynamics error in a long horizon task. My primary objective was to visualize trajectory convergence in the milestone dimension, demonstrating how the robot incrementally approaches its sub-goals. Furthermore, because the inference latency of standard diffusion is too high for practical replanning loops, I implemented Mean Flow and Flow Matching with step skipping to ensure the system could replan within a feasible timeframe.
-
----
-
-### **2. The Challenge: Identifying the Optimal Replanning Trigger**
-
-To implement robust replanning, the fundamental challenge was not just how to replan, but determining "When is replanning necessary?". Answering this required verifying the integrity of the entire planning pipeline.
-
-Diagnosis of Failure Modes: I broke down the potential failure points into three verification steps:
-
-Representation: Is the milestone latent space learned correctly?
-
-Generation: Are the generated milestones semantically valid?
-
-Execution: Is the robot actually arriving at these milestones?
-
-
-Findings & Bottleneck: My analysis revealed that while the representation space was well-structured and milestone generation was generally appropriate (despite occasional redundant loops like lifting and replacing a cube), the primary failure occurred in execution—the robot frequently failed to reach the target milestone.
-
-
-Overcoming Visualization Limitations: Verifying these states using dimensionality reduction (UMAP/t-SNE) was effective in simpler environments like Franka Kitchen, but failed to provide clear clusters in the complex Ogbench tasks. To resolve this ambiguity, I trained a dedicated Observation Decoder to reconstruct latent milestones back into visual images. This allowed me to visually confirm that while the planner intended valid states, the low-level controller was failing to converge, accurately pinpointing the need for replanning.
-
-<div class="row justify-content-center"> <div class="col-sm-8 mt-3 mt-md-0"> {% include figure.liquid path="assets/img/dtamp_umap.png" title="Embedding Space Analysis" class="img-fluid rounded z-depth-1" %} </div> </div> <div class="caption"> Umap Visualization of Franka Kitchen Episode illustrating how a successful trajectory is visualized. </div>
----
-
-### **3. Methodology: Meanflow-DTAMP & Replanning**
-
-To compensate the dynamics error, I integrated **Mean Flow** into the DTAMP framework to facilitate stable milestone replanning.
-
-#### **3.1 Mean Flow**
-Unlike standard diffusion which is stochastic, I implemented **Mean Flow**, which models the field of average velocity $u(z,r,t)$. This deterministic approach aligns the generation process with the displacement vector, reducing variance and allowing for consistent one-step sampling that is crucial for real-time replanning.
+**Fast milestone generation.** I replaced the diffusion backbone with Mean Flow, which learns the average velocity $u(z, r, t)$ over an interval instead of the instantaneous velocity $v(z, t)$:
 
 $$u(z_t, r, t) = v(z_t, t) - (t-r)\frac{d}{dt}u(z_t, r, t)$$
 
+Because $u$ describes the whole displacement from $r$ to $t$, a single deterministic step can map noise to a full set of milestones. For comparison I also ran flow matching and diffusion with reduced (skipped) sampling steps.
 
-<div class="row justify-content-center"> <div class="col-sm-8 mt-3 mt-md-0"> {% include figure.liquid path="assets/img/dtamp_meanflow.png" title="Embedding Space Analysis" class="img-fluid rounded z-depth-1" %} </div> </div>
-<div class="caption">
-    Visualization of the average velocity field $u(z, r, t)$ in Mean Flow (Image source: Mean Flow paper). The deterministic path ensures tighter alignment with the target trajectory compared to instantaneous velocity fields.
+<figure>
+  <img src="/assets/img/dtamp_meanflow.png" alt="Average velocity field u(z, r, t) versus instantaneous velocity v along a curved path" loading="lazy">
+  <figcaption>Mean Flow's average velocity u(z, r, t) spans the interval between r and t, which is what allows one-step sampling. Image from the Mean Flow paper.</figcaption>
+</figure>
+
+**Milestone spacing.** DTAMP conditions the generator on a target interval $\Delta$ between milestones. Keeping $\Delta$ small makes milestones denser, so each one stays within reach of the low-level policy.
+
+**A replanning trigger.** On OGBench Cube-Double-Play I tracked the distance between the current state and the active milestone. In a healthy rollout it forms a sawtooth: it falls as the robot approaches a milestone, then jumps when the target switches. When the robot exceeds the time limit for a milestone, the forced switch leaves it far behind the plan and the distance spikes. I used that spike as the signal to discard the plan and generate new milestones.
+
+<figure>
+  <video src="/assets/img/dtamp_milestone.mp4" autoplay muted loop playsinline controls preload="metadata"></video>
+  <figcaption>Milestone distance over an episode: the sawtooth of reaching and switching milestones, then a spike around step 45 after a forced switch, which triggers replanning.</figcaption>
+</figure>
+
+### Results
+
+On Franka Kitchen (300 training diffusion steps, no target interval conditioning), diffusion collapses once sampling drops below 50 steps. One-step Mean Flow scores 75 on kitchen-partial, above the paper's diffusion result, but 68.25 on kitchen-mixed, below it. Flow matching with $x_0$ prediction holds up across step counts on kitchen-mixed.
+
+| Sampling steps | Partial: Diffusion | Partial: FM (vel.) | Partial: FM ($x_0$) | Partial: Mean Flow | Mixed: Diffusion | Mixed: FM (vel.) | Mixed: FM ($x_0$) | Mixed: Mean Flow |
+|---:|---:|---:|---:|---:|---:|---:|---:|---:|
+| 300 | 73 | 54 | 62 | – | 73 | 53 | 75 | – |
+| 50 | 73 | 56 | 69.5 | – | 70 | 53 | 74.5 | – |
+| 30 | 0.5 | 54 | 64 | – | 2.5 | 55 | 73 | – |
+| 10 | 1.5 | 54 | 64.5 | – | 6 | 52 | 73.5 | – |
+| 4 | – | – | 54 | – | – | – | 74.5 | – |
+| 1 | – | – | 52.5 | **75** | – | – | 72.5 | **68.25** |
+
+Paper scores for DTAMP: 63.4 ± 8.80 on kitchen-partial and 74.4 ± 1.39 on kitchen-mixed.
+
+To check where failures came from, I verified the pipeline stage by stage: the milestone latent space, the generated milestones, and whether the robot actually reached them. In Franka Kitchen, UMAP of the goal embeddings showed clear structure, with successful trajectories following the manifold. In OGBench the global projection showed no usable structure, even though the milestones behaved consistently up close. To get around this I trained an observation decoder that renders latent milestones as images. The generated milestones were mostly sensible, apart from occasional redundant loops such as lifting and replacing a cube. The failures came from execution: the low-level controller often did not reach the milestone.
+
+<div class="fig-row">
+  <figure>
+    <img src="/assets/img/dtamp_umap.png" alt="UMAP of kitchen-partial goal embeddings with one episode trajectory overlaid" loading="lazy">
+    <figcaption>Franka Kitchen: a successful episode follows the embedding manifold.</figcaption>
+  </figure>
+  <figure>
+    <img src="/assets/img/dtamp_umap_og.png" alt="UMAP of cube-double-play goal embeddings with milestones overlaid" loading="lazy">
+    <figcaption>OGBench Cube-Double-Play: no clear global structure.</figcaption>
+  </figure>
 </div>
 
-#### **3.2 DTAMP with Target Interval Conditioning**
+### Takeaways
 
-I adopted the DTAMP architecture, which conditions the generator on a target interval ($\Delta$) between milestones. This mechanism enables the planner to decompose long-horizon tasks (e.g., "Cube-double-play") into a sequence of reachable sub-goals (milestones, $g_{1:K}$). By explicitly controlling this interval, I ensured that consecutive milestones are generated close enough for the low-level action policy to reach them reliably, thereby preventing execution failures.
-
-<div class="row justify-content-center"> <div class="col-sm-8 mt-3 mt-md-0"> {% include figure.liquid path="assets/img/dtamp_arch.png" title="Embedding Space Analysis" class="img-fluid rounded z-depth-1" %} </div> </div>
-<div class="caption">
-    DTAMP architecture from the DTAMP paper.
-</div>
-
----
-
-### **4. Key Experiments & Analysis**
-
-#### **4.1 Meanflow vs. Diffusion Performance**
-I compared Meanflow against standard Diffusion and Flow Matching on the Franka Kitchen Tasks. Meanflow demonstrated superior stability, achieving competitive or higher scores in mixed environments **with minimal inference latency.** Unlike diffusion, which requires hundreds of iterations, Meanflow's deterministic sampling allowed for maintaining high trajectory fidelity even when compressed to a single step.
-
-<div class="row justify-content-center">
-    <div class="col-sm-8 mt-3 mt-md-0">
-        {% include figure.liquid path="assets/img/dtamp_result.png" title="Meanflow vs Diffusion, Flowmatching Performance" class="img-fluid rounded z-depth-1" %}
-    </div>
-</div>
-<div class="caption">
-    Performance comparison on Kitchen-Mixed-v0. Meanflow (Green) consistently achieves high success rates (approx 74.5) even at varied step counts, outperforming standard flow matching and diffusion in stability.
-</div>
-
-#### **4.2 Ogbench Milestone Analysis**
-In the challenging **Ogbench Cube-Double-Play** task, I analyzed the "Milestone Distance" metric to evaluate execution stability. The graph below illustrates the distance between the robot's current state and the target milestone over time.
-
-* **Ideal Pattern (Sawtooth):** The red line typically shows a gradual decline as the robot approaches a milestone, followed by an immediate spike when it switches to the next target. This repetitive "approach-and-switch" pattern indicates successful execution.
-* **Failure Mode & Replanning:** A critical issue arises when the robot exceeds the maximum time limit for a milestone. The system forces a switch to the next target, often causing the distance to **explode** as the robot falls behind the planned trajectory. This abnormal spike serves as a clear, data-driven trigger to discard current plans and **regenerate new milestones**.
-
-<div class="row justify-content-center">
-    <div class="col-sm-8 mt-3 mt-md-0">
-         {% include figure.liquid path="assets/img/dtamp_milestone.mp4" title="Milestone Distance Tracking" class="img-fluid rounded z-depth-1" %}
-    </div>
-</div>
-<div class="caption">
-    Analysis of Milestone Distance. The early phase shows the ideal 'sawtooth' pattern of reaching and switching milestones. Around step 45, a forced switch causes a distance explosion, triggering the replanning algorithm.
-</div>
-
-#### **4.3 Embedding Space Analysis (UMAP)**
-To diagnose planning reliability, I visualized the goal embeddings using UMAP. This analysis revealed a stark contrast between environments:
-
-* **Franka Kitchen (Success):** The manifold structure was distinct, allowing for clear verification of generated milestones and trajectories.
-* **Ogbench (Challenge):** Unlike Kitchen, verifying milestone tracking in **Ogbench** was significantly more difficult. While local behaviors appeared consistent with physical laws (i.e., the milestone state converged as the actual state approached the target), the **global UMAP visualization failed to capture these relationships distinctly**. This ambiguity made it difficult to confirm visually whether the robot was truly "moving towards" the generated milestones, necessitating more robust verification methods like the Observation Decoder.
-
-<div class="row justify-content-center">
-    <div class="col-sm-6 mt-3 mt-md-0">
-        {% include figure.liquid path="assets/img/dtamp_umap.png" title="Franka Kitchen UMAP" class="img-fluid rounded z-depth-1" %}
-        <div class="caption">
-            <strong>Franka Kitchen:</strong> Clear trajectory alignment on the manifold.
-        </div>
-    </div>
-    <div class="col-sm-6 mt-3 mt-md-0">
-        {% include figure.liquid path="assets/img/dtamp_umap_og.png" title="Ogbench UMAP" class="img-fluid rounded z-depth-1" %}
-        <div class="caption">
-            <strong>Ogbench:</strong> Ambiguous global structure despite local consistency.
-        </div>
-    </div>
-</div>
-
----
-
-### **5. Insights & Contributions**
-#### **5.1 Robustness via Replanning**
-
-Insight: My experiments confirmed that in stochastic environments like Ogbench, open-loop planning is insufficient due to unpredictable dynamics errors.
-
-Contribution: I introduced a milestone-based replanning framework that enables the robot to dynamically recover from execution failures (e.g., grasping errors). By monitoring trajectory deviation in real-time, the system triggers replanning to correct the path, preventing episodes from terminating prematurely.
-
-#### **5.2 Topological Density for Policy Reachability**
-
-Insight: The success of hierarchical planning heavily depends on the reachability between sub-goals. Sparse milestones create blind spots where the low-level policy fails to find a feasible path to the next target.
-
-Contribution: I identified that milestone density is a critical factor for complex manipulation. By optimizing the target interval to generate denser milestones, I ensured that consecutive sub-goals remain within the local policy's reach, significantly improving task success rates.
-
-#### **5.3 Real-Time Feasibility with Mean Flow**
-
-Insight: Effective replanning requires generating new trajectories almost instantly, which is computationally prohibitive with standard stochastic diffusion models.
-
-Contribution: I transitioned the generative backbone to Mean Flow, enabling deterministic 1-step sampling. This architectural shift drastically reduced inference latency, allowing the robot to generate high-fidelity trajectories in real-time without the computational overhead of iterative diffusion steps.
+- In OGBench, open-loop planning cannot absorb dynamics errors. Replanning on milestone-distance spikes lets the robot recover from failures such as a missed grasp.
+- Milestone density matters. Sparse milestones leave gaps the low-level policy cannot bridge.
+- Replanning is only practical if sampling is cheap. One-step Mean Flow makes that possible, though on kitchen-mixed it still trails multi-step sampling.
+- Low-dimensional projections were not enough to debug planning in complex scenes. Decoding milestones into images was what located the bottleneck.

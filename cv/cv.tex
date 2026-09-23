@@ -1,0 +1,149 @@
+% ------------------------------------------------------------------
+%  CV: June Sungjoo Kim
+%  Compile with XeLaTeX or pdfLaTeX (Overleaf: Menu -> Compiler).
+%  Build locally:  tectonic cv/cv.tex   (then copy cv.pdf to assets/pdf/cv.pdf)
+% ------------------------------------------------------------------
+\documentclass[10pt,a4paper]{article}
+
+\usepackage[a4paper,margin=1.6cm,top=1.2cm,bottom=1.0cm]{geometry}
+\usepackage[T1]{fontenc}
+\usepackage[lining]{CrimsonPro}
+\usepackage{xcolor}
+\usepackage{enumitem}
+\usepackage{titlesec}
+\usepackage{tabularx}
+\usepackage[hidelinks]{hyperref}
+
+\definecolor{ink}{HTML}{141413}
+\definecolor{muted}{HTML}{4F4E4A}
+\definecolor{rule}{HTML}{A8A59B}
+\color{ink}
+
+\pagestyle{empty}
+\setlength{\parindent}{0pt}
+\setlength{\tabcolsep}{0pt}
+\linespread{1.0}
+
+% Section headings: serif, with a thin rule underneath
+\titleformat{\section}
+  {\rmfamily\fontsize{12.8}{15}\selectfont\color{ink}}{}{0pt}{}[\vspace{2pt}{\color{rule}\titlerule[0.6pt]}]
+\titlespacing*{\section}{0pt}{9pt}{4pt}
+
+\setlist[itemize]{leftmargin=12pt,itemsep=0.5pt,topsep=1.5pt,parsep=0pt,label={\color{muted}\textbullet}}
+
+% \entry{Title}{Date}{Subtitle}
+\newcommand{\entry}[3]{%
+  {\textbf{#1}\hfill{\color{muted}\small #2}}\\
+  {\color{muted}#3}\par}
+
+% \pub{Title}{Authors}{Venue}{Links}
+\newcommand{\pub}[4]{%
+  \textbf{#1}\\
+  {\small #2}\\
+  {\small\color{muted}\textit{#3}\quad #4}\par}
+
+\newcommand{\me}{\textbf{Sungjoo Kim}}
+\newcommand{\sep}{\enspace{\color{rule}|}\enspace}
+
+\begin{document}
+\fontsize{10pt}{12.4pt}\selectfont
+\raggedright
+
+% ------------------------------------------------------------------
+{\rmfamily\fontsize{26}{28}\selectfont June Sungjoo Kim}\par\vspace{3pt}
+{\color{muted}Undergraduate Researcher, Seoul National University}\par\vspace{3pt}
+{\small
+\href{mailto:junesjukim@gmail.com}{junesjukim@gmail.com}\sep
+\href{https://junesjukim.github.io}{junesjukim.github.io}\sep
+\href{https://github.com/junesjukim}{github.com/junesjukim}\sep
+\href{https://scholar.google.com/citations?user=qc6CJjYAAAAJ}{Google Scholar}}
+
+\vspace{4pt}
+{\small\color{muted}Research interests: vision-language-action models, world action models, synthetic robot data, 3D vision.}
+
+% ------------------------------------------------------------------
+\section{Education}
+
+\entry{Seoul National University}{Mar 2021 -- Present}
+      {B.Eng. in Biosystems Engineering and Artificial Intelligence \enspace·\enspace GPA 4.00 / 4.3}
+\vspace{3pt}
+\entry{Daejeon Science High School for the Gifted}{Graduated Feb 2021}
+      {Physics and Chemistry}
+
+% ------------------------------------------------------------------
+\section{Research Experience}
+
+\entry{SNU Visual Computing Lab}{2026 -- Present}
+      {Undergraduate Research Intern, advised by Prof. Hanbyul Joo}
+\begin{itemize}
+  \item Creating synthetic vision-language-action (VLA) training data from human demonstrations (ongoing).
+  \item Simulation-ready compositional 3D scene reconstruction from a single image (SimuScene).
+  \item Zero-shot long-horizon dexterous manipulation with multi-view 3D-grounded VLM reasoning (ZeroDex).
+\end{itemize}
+\vspace{3pt}
+\entry{SNU Robot Learning Lab}{Dec 2024 -- 2025}
+      {Undergraduate Research Intern, advised by Prof. Songhwai Oh}
+\begin{itemize}
+  \item Replaced diffusion with flow matching in Diffuser; predicting denoised data raised Adroit Pen-cloned from 49.8 to 66.8.
+  \item Integrated one-step Mean Flow sampling into DTAMP for milestone-based replanning in long-horizon manipulation.
+\end{itemize}
+\vspace{3pt}
+\entry{SNU Biosystems Control \& Precision Lab}{Jun 2022 -- Dec 2022}
+      {Undergraduate Researcher}
+\begin{itemize}
+  \item \textit{Autonomous racing (AI team lead):} built a 4,000-image detection dataset and a lane-change state machine for the race car.
+  \item \textit{Unmanned orchard robot:} developed on-device fruit and disease detection (YOLOv5n on Jetson Nano) integrated with LiDAR SLAM navigation. Grand Prize, RDA Agricultural Robot Competition.
+\end{itemize}
+
+% ------------------------------------------------------------------
+\section{Publications}
+
+\pub{SimuScene: Simulation-Ready Compositional 3D Scene Reconstruction from a Single Image}
+    {Inhee Lee*, Sangwon Baik*, \me, Hyeonwoo Kim, Hyunsoo Cha, Hanbyul Joo}
+    {Preprint, 2026}
+    {\href{https://arxiv.org/abs/2606.03994}{arXiv}\sep\href{https://snuvclab.github.io/SimuScene/}{Project}\sep\href{https://github.com/snuvclab/SimuScene}{Code}}
+\vspace{5pt}
+
+\pub{ZeroDex: Zero-Shot Long-Horizon Dexterous Manipulation via Multi-View 3D-Grounded VLM Reasoning}
+    {Jisoo Kim, Sangwon Baik, Taeksoo Kim, \me, Junyoung Lee, Mingi Choi, Hanbyul Joo}
+    {Preprint, 2026}
+    {\href{https://arxiv.org/abs/2606.19340}{arXiv}\sep\href{https://jlogkim.github.io/zerodex/}{Project}\hfill * Equal contribution}
+
+% ------------------------------------------------------------------
+\section{Industry \& Projects}
+
+\entry{2nd Company}{2025}
+      {Engineer, MEDi (accessibility app for visually impaired shoppers)}
+\begin{itemize}
+  \item On-device Android pipeline fusing TFLite detection with MediaPipe hand tracking (0.76 mAP); led latency optimization.
+\end{itemize}
+
+% ------------------------------------------------------------------
+\section{Honors \& Awards}
+
+\begin{tabularx}{\linewidth}{@{}X r@{}}
+  \textbf{Dongwon Development Fund Scholarship} & {\color{muted}\small } \\[2pt]
+  \textbf{SNU Academic Scholarship} & {\color{muted}\small } \\[2pt]
+  \textbf{Grand Prize}, Agricultural Robot Competition, Rural Development Administration & {\color{muted}\small 2022} \\[2pt]
+  \textbf{Excellence Award} (KRW 5M prototype funding), 3rd SNU $\times$ Hansot Food Service Startup Competition & {\color{muted}\small } \\
+\end{tabularx}
+% TODO: add the year for each award/scholarship in the right-hand column.
+
+% ------------------------------------------------------------------
+\section{Leadership \& Programs}
+
+\begin{tabularx}{\linewidth}{@{}X r@{}}
+  \textbf{SNUSV.NET} (SNU Student Venture Network), 36th Vice President; designed a startup curriculum & {\color{muted}\small Oct 2024 -- Present} \\[2pt]
+  \textbf{Google Explore CSR Program}, mentee at SNU GSDS AIoT Lab; quantization, pruning, domain adaptation & {\color{muted}\small Jun -- Sep 2024} \\[2pt]
+  \textbf{Google Machine Learning Bootcamp}, participant & {\color{muted}\small Jun -- Sep 2024} \\
+\end{tabularx}
+
+% ------------------------------------------------------------------
+\section{Skills \& Languages}
+
+\begin{tabularx}{\linewidth}{@{}l X@{}}
+  \textbf{Programming}\hspace{12pt} & Python, C/C++, PyTorch, TensorFlow / TFLite, ROS, Linux, Kotlin \\[2pt]
+  \textbf{Languages} & Korean (native), English (fluent, TOEFL 111), Japanese (fluent) \\
+\end{tabularx}
+
+\end{document}

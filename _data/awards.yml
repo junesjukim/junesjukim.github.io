@@ -1,0 +1,13 @@
+# Honors, awards and scholarships shown on the home page (newest first).
+- label: Scholarship
+  text: Dongwon Development Fund Scholarship
+- label: Scholarship
+  text: SNU Academic Scholarship
+- label: Grand Prize
+  text: Agricultural Robot Competition, Rural Development Administration
+  project: /projects/unmanned_orchard_robot/
+  project_title: Unmanned Orchard Robot
+- label: Excellence Award
+  text: 3rd SNU × Hansot Food Service Startup Competition
+  project: /projects/chefbox/
+  project_title: ChefBox

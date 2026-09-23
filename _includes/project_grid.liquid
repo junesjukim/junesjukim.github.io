@@ -1,0 +1,20 @@
+{% comment %} Optional param: kind (filter by project kind) {% endcomment %}
+{% assign items = site.projects | sort: 'importance' %}
+{% if include.kind %}{% assign items = items | where: 'kind', include.kind %}{% endif %}
+<div class="proj-grid">
+  {% for p in items %}
+    <a class="proj" href="{{ p.url | relative_url }}">
+      <div class="proj-media">
+        <img src="{{ p.thumb | relative_url }}" alt="" loading="lazy" width="1200" height="900">
+      </div>
+      <div class="proj-body">
+        <p class="badges">
+          <span class="badge">{{ p.kind }}{% if p.year %}, {{ p.year }}{% endif %}</span>
+          {% if p.award %}<span class="badge badge--hl">{{ p.award }}</span>{% endif %}
+        </p>
+        <h3 class="proj-title">{{ p.title }}</h3>
+        <p class="proj-desc">{{ p.tagline }}</p>
+      </div>
+    </a>
+  {% endfor %}
+</div>

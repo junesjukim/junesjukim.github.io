@@ -1,151 +1,76 @@
 ---
-layout: page
-title: Planning with Flowmatching
-description: Optimizing real-time robotic control by transitioning from Diffusion to Flow Matching to reduce sampling steps and analyze dynamics errors.
-img: assets/img/diffuser_kitchen.png
+layout: project
+title: Flow Matching × Diffuser
+tagline: Swapping diffusion for flow matching in Diffuser to cut sampling steps for real-time control, plus re-parameterization and advantage guidance.
+description: Flow matching in Diffuser for faster, more stable trajectory planning.
+kind: Research
+year: 2025
 importance: 2
-category: work
+math: true
+thumb: /assets/img/thumbs/flow-matching.jpg
+role: Research intern
+context: SNU Robot Learning Lab, advised by Prof. Songhwai Oh
+stack: [PyTorch, Diffuser, Flow Matching, IQL, D4RL]
+hero:
+  video: /assets/img/flow_kitchen.mp4
+  caption: A Franka Kitchen task controlled by a flow-matching planner.
+highlights:
+  - "**5× fewer sampling steps.** At 4 steps, flow matching holds 61.9 on Walker2d-Medium-Replay while diffusion drops to 52.8."
+  - "Predicting denoised data (x̂₀) instead of velocity raised Pen-cloned from **49.8 → 66.8**, against a diffusion baseline of 44.1."
+  - "**Advantage-based guidance** from IQL-trained Q and V functions, for lower-variance trajectory steering."
+  - "Found that dynamics error **climbs after ~100 steps** of open-loop execution, which led to the replanning work in Mean Flow × DTAMP."
 ---
 
-<div class="row justify-content-center">
-    <div class="col-sm-10 mt-3 mt-md-0">
-        {% include video.liquid path="assets/img/flow_kitchen.mp4" class="img-fluid rounded z-depth-1" controls=true %}
-    </div>
-</div>
-<div class="caption">
-    Demonstration of a kitchen partial-task execution controlled by a Flow Matching-based diffuser model.
-</div>
+### Problem
 
----
+Diffuser (Janner et al.) plans by denoising a whole trajectory with a diffusion model. The plans are good, but each one costs dozens of denoising steps, which is too slow for a control loop that has to replan at 50 Hz or more. Cutting the step count on the stock model is not an option: on Franka Kitchen (kitchen-partial-v0), Diffuser scores 44.7 at 16 steps but falls to 35.7 at 4 steps and 33.5 at 1 step.
 
-### **1. Overview**
+During my internship at the SNU Robot Learning Lab, I set out to make Diffuser fast enough for real-time replanning without giving up plan quality.
 
-During my research internship at the **SNU Robot Learning Lab (RLLAB)**, I tackled the dual challenges of **latency** and **control stability** in deploying generative models for robotic manipulation. While Diffusion Models generate high-quality behaviors, their iterative sampling limits real-time application, and standard architectures often struggle with stability in complex tasks.
+### Approach
 
-### **1. Overview**
+I made three changes to the jannerm/diffuser codebase.
 
-During my research internship at the **SNU Robot Learning Lab (RLLAB)**, I addressed the critical trade-off between **inference latency** and **control stability** in robotic manipulation. While Diffusion Models generate high-quality behaviors, their iterative sampling limits real-time application. To overcome this, I introduced a **model re-parameterization technique**—predicting denoised data directly—which significantly enhanced performance in high-dimensional environments like Pen-Clone, proving that architectural choices are as vital as algorithmic speed.
+**Flow matching with optimal-transport paths.** I replaced the diffusion process with flow matching and used the optimal-transport conditional path, which moves each sample along a straight line between noise and data. Straight paths are easier to learn and hold up better when integrated with only a few large steps.
 
-My research focused on optimizing the **jannerm/diffuser** framework by transitioning to **Flow Matching (FM)** for faster inference. Crucially, I went beyond speed optimization by introducing **architectural improvements**—specifically **model re-parameterization** and **advantage-based guidance**—to enhance trajectory fidelity. This holistic approach allowed the system to achieve real-time replanning capabilities while significantly outperforming baseline models in complex environments like Franka Kitchen.
+<figure>
+  <img src="/assets/img/flow_diff_OT.png" alt="Curved diffusion probability paths next to straight optimal-transport paths" loading="lazy">
+  <figcaption>Diffusion paths (left) curve; optimal-transport paths (right) are straight. Figure from Lipman et al., "Flow Matching for Generative Modeling" (ICLR 2023).</figcaption>
+</figure>
 
----
+**Predicting clean data instead of velocity.** Diffuser can predict either the noise or the denoised trajectory. Standard flow matching predicts the velocity $v_t$. I suspected that with Diffuser's temporal U-Net, predicting the clean trajectory $\hat{x}_0$ directly would give a lower-variance target that makes better use of the temporal structure. The velocity needed for integration is then recovered as
 
-### **2. The Challenge: Latency vs. High-Fidelity Control**
+$$v_t = \frac{\hat{x}_0 - x_t}{1 - t},$$
 
-Achieving real-time control requires not only speed but also physical precision. I identified critical hurdles that standard generative models face in dynamic environments:
+where $x_t$ is the current sample and $t \in [0, 1]$ is normalized time, with $t = 1$ at the data.
 
-* **Inference Bottleneck (Speed):** Standard diffusion requires dozens of steps to transform noise into a valid trajectory. This latency disrupts the high-frequency feedback loops (50Hz+) required for responsive control.
+**Advantage-based guidance.** Diffuser steers sampling with a value estimate of the whole trajectory. That estimate has high variance and reflects the behavior policy rather than the optimal one. Instead, I trained separate $Q$ and $V$ functions with Implicit Q-Learning (IQL) and guided sampling with the gradient of the advantage $A(s, a) = Q(s, a) - V(s)$, pushing generation toward higher-advantage actions.
 
-<div class="row justify-content-center">
-    <div class="col-sm-8 mt-3 mt-md-0">
-        {% include figure.liquid path="assets/img/flow_sampling_step.png" class="img-fluid rounded z-depth-1" %}
-    </div>
-</div>
-<div class="caption">
-    Performance degradation in standard models: Reducing sampling steps drastically lowers success rates, highlighting the need for a more efficient generation method.
-</div>
+### Results
 
-* **Dynamics Instability & Error (Performance):** In partially observable and high-dimensional tasks (e.g., Franka Kitchen), small prediction errors compound over time. My analysis revealed that standard velocity-based prediction often fails to capture stable dynamics, leading to "shaky" motion and task failure after a certain horizon.
+**Fewer steps.** On Walker2d-Medium-Replay, going from 20 to 4 sampling steps drops Diffuser from 63.6 to 52.8. The flow-matching planner goes from 69.3 to **61.9**. Four steps is a 5× reduction in sampling cost, and at that setting the flow-matching planner still does nearly as well as Diffuser does at 20 steps. Below 4 steps, both models degrade sharply.
 
-<div class="row justify-content-center">
-    <div class="col-sm-8 mt-3 mt-md-0">
-        {% include figure.liquid path="assets/img/flow_dynamics_error.png" title="Dynamics Error Analysis" class="img-fluid rounded z-depth-1" %}
-    </div>
-</div>
-<div class="caption">
-    Dynamics error analysis showing a critical spike in prediction error after approx. 100 steps. This necessitated robust guidance and replanning strategies.
-</div>
----
+<figure>
+  <img src="/assets/img/flow_result1.png" alt="Line plot of normalized score against sampling steps for Diffuser and flow matching on Walker2d-Medium-Replay" loading="lazy">
+  <figcaption>Normalized score vs. sampling steps on Walker2d-Medium-Replay. Flow matching keeps most of its performance at 4 steps.</figcaption>
+</figure>
 
-### **3. Methodology: Transition to Flow Matching**
+**Output parameterization.** On the high-dimensional Adroit Pen-cloned-v0 task, velocity prediction was the weak point. Switching to clean-data prediction raised the score from 49.8 to **66.8**, about a 34% relative gain, against a diffusion baseline of 44.1.
 
-I modified the **jannerm/diffuser** framework to use Flow Matching instead of standard diffusion and added step skipping and advantage guidance.  
+<figure>
+  <img src="/assets/img/flow_result2.png" alt="Bar chart comparing Diffusion, flow matching with velocity output, and flow matching with denoised-data output on Pen-cloned-v0" loading="lazy">
+  <figcaption>Output-parameterization ablation on Pen-cloned-v0. Predicting the denoised trajectory gives the largest gain.</figcaption>
+</figure>
 
-#### **3.1 Optimal Transport (OT) Paths**
-I implemented flowmathing with **Optimal Transport (OT) paths**, which create straighter, simpler mathematical routes for the model to follow. These paths are easier to learn and allow for faster sampling without losing accuracy.
+**Where open-loop plans break.** Faster sampling alone does not fix drift. When I tracked the gap between planned and actual dynamics over an episode, the error stayed near zero for about 100 steps, then climbed steadily with two sharp jumps later on. Beyond that horizon, executing a plan open-loop is unreliable.
 
-<div class="row justify-content-center">
-    <div class="col-sm-6 mt-3 mt-md-0">
-        {% include figure.liquid path="assets/img/flow_diff_OT.png" title="Diffusion vs Optimal Transport Paths" class="img-fluid rounded z-depth-1" %}
-    </div>
-</div>
-<div class="caption">
-    $$\psi_{t}(x_{0}|x_{1})=(1-(1-\sigma_{min})t)x_{0}+tx_{1}$$
-    Comparison of probability paths: Diffusion (curved, slow) vs. Optimal Transport (straight, fast).
-</div>
+<figure>
+  <img src="/assets/img/flow_dynamics_error.png" alt="Dynamics error norm over environment steps, flat until about step 100 and then rising" loading="lazy">
+  <figcaption>Dynamics error norm over an episode. The error starts rising around step 100.</figcaption>
+</figure>
 
+### Takeaways
 
-#### **3.2 Model Output Re-parameterization**
-To further optimize performance, I experimented with the model's output parameterization. Drawing inspiration from the jannerm/diffuser framework, which offers two prediction modes—predicting epsilon (error) and predicting denoised data—I hypothesized that predicting **"denoised data"** ($\hat{x}_0$) directly might be more advantageous than the standard approach of predicting velocity ($v_t$) in the current model architecture using Temporal U-Net. Intuitively, this re-parameterization allows the model to leverage the temporal structure more effectively. I implemented this approach and found that deriving velocity from predicted denoised data significantly improved stability and task success rates in complex manipulation tasks like Pen-clone environments.
-
-The velocity is derived from the predicted denoised data using the following transformation:
-
-$$v_t = \frac{\hat{x}_0 - x_t}{1 - \bar{t}}$$
-
-where $\hat{x}_0$ is the predicted denoised data, $x_t$ is the noisy input at time $t$, and $\bar{t}$ is the normalized time.
-
-#### **3.3 Advanced Guidance via Advantage Optimization**
-
-I identified that the one of the primary bottlenecks in model performance was the inaccurate guidance stemming from unstable value estimation. To address this, I developed an Advantage-based guidance system.
-
-**1. Limitation of Standard Guidance:** Standard Diffuser models typically estimate the value of an entire trajectory to guide the sampling process, but this approach suffers from high variance. Furthermore, it often relies on values derived from the behavior policy rather than the optimal policy, leading to sub-optimal trajectory generation.
-
-**2. Advantage-Based Solution:** To provide more precise guidance, I utilized Implicit Q-Learning (IQL) to separately train robust $Q$ and $V$ functions. I calculated the Advantage ($A(s, a) = Q(s, a) - V(s)$) and applied gradient-based guidance to steer the generation process toward actions with higher Advantage, thereby maximizing success rates while minimizing dynamics errors.
-
----
-
-### **4. Key Experiments & Analysis**
-
-#### **4.1 Efficiency Trade-off Analysis**
-
-While Flow Matching provides a significant speed advantage, maintaining performance at low sampling steps is critical.
-
-**Finding:** In the Walker2d-Medium-Replay task, reducing sampling steps from 20 to 4 caused a sharp performance drop in the baseline Diffusion model ($63.6 \rightarrow 52.8$). In contrast, the Flow Matching model maintained a significantly higher success rate ($69.3 \rightarrow 61.9$), demonstrating superior robustness for low-latency control.
-
-<div class="row justify-content-center">
-    <div class="col-sm-8 mt-3 mt-md-0">
-        {% include figure.liquid path="assets/img/flow_result1.png" title="Efficiency Trade-off on Walker2d" class="img-fluid rounded z-depth-1" %}
-    </div>
-</div>
-<div class="caption">
-    Performance comparison on Walker2d-Medium-Replay. Flow Matching (Blue) retains high performance even at 4 sampling steps, enabling 5x faster inference than the baseline.
-</div>
-
-#### **4.2 Optimization for Complex Manipulation**
-
-Initial experiments revealed that standard Flow Matching (predicting velocity) struggled in high-dimensional tasks like Pen-cloned-v0.
-
-**Hypothesis & Fix:** I hypothesized that velocity variance was too high for stable learning. By re-parameterizing the model to predict "Denoised Data ($\hat{x}_0$)", I achieved a breakthrough in performance.
-
-**Result:** This architectural change improved the score from 49.8 (Velocity) to 66.8 (Denoised Data), significantly outperforming the Diffusion baseline (44.1).
-
-<div class="row justify-content-center">
-    <div class="col-sm-8 mt-3 mt-md-0">
-        {% include figure.liquid path="assets/img/flow_result2.png" title="Ablation Study on Model Output" class="img-fluid rounded z-depth-1" %}
-    </div>
-</div>
-<div class="caption">
-    Ablation study on model output parameterization in Pen-cloned-v0. Predicting 'Denoised Data' proved critical for solving complex manipulation tasks.
-</div>
-
----
-
-### **5. Insights & Contributions**
-
-#### **1. Strategic Latency Optimization**
-
-**Insight:** Real-time robotic control requires a delicate balance between inference speed and actuation precision.
-
-**Contribution:** I quantified this trade-off on the Walker2d benchmark, identifying that Flow Matching maintains robust performance (61.9) even at 4 sampling steps, whereas baseline models degrade significantly. This finding established a viable operating point for high-frequency (50Hz+) control loops.
-
-#### **2. Data-Driven Replanning Architecture**
-
-**Insight:** In partially observable environments, open-loop execution inevitably diverges due to dynamics mismatch.
-
-**Contribution:** Through rigorous error analysis, I discovered that dynamics prediction errors exhibit a non-linear spike after a 100-step horizon. 
-
-#### **3. Architectural Regularization for High-Dimensional Control**
-
-**Insight:** Standard velocity prediction in generative models suffers from high variance in complex action spaces (e.g., Shadow Hand).
-
-**Contribution:** I introduced a model re-parameterization technique predicting "denoised data" ($\hat{x}_0$) directly. This architectural shift acts as an implicit regularizer, yielding a 34% performance gain in the Pen manipulation task and proving that structural priors are as critical as algorithmic choice.
+- Flow matching with straight OT paths gives a practical speed-quality trade-off: 4 steps is a workable setting for replanning at control rates.
+- The prediction target matters as much as the generative framework. Predicting clean data acted as an implicit regularizer and mattered most in high-dimensional manipulation.
+- The dynamics-error analysis showed that plans need refreshing before roughly 100 steps. That result motivated my follow-up work on real-time replanning with Mean Flow and DTAMP.

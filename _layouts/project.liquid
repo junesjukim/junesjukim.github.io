@@ -1,0 +1,73 @@
+---
+layout: base
+---
+{% assign words = content | strip_html | number_of_words %}
+{% assign minutes = words | divided_by: 200 | plus: 1 %}
+
+<article class="container narrow">
+  <header class="page-head">
+    <a class="crumb" href="{{ '/projects/' | relative_url }}"><i class="fa-solid fa-arrow-left"></i> Projects</a>
+    <p class="badges"><span class="badge">{{ page.kind }}{% if page.year %}, {{ page.year }}{% endif %}</span>{% if page.award %}<span class="badge badge--hl">{{ page.award }}</span>{% endif %}</p>
+    <h1 class="page-title">{{ page.title }}</h1>
+    <p class="page-lead">{{ page.tagline }}</p>
+  </header>
+
+  <table class="facts">
+    {% if page.role %}<tr><th>Role</th><td>{{ page.role }}</td></tr>{% endif %}
+    {% if page.context %}<tr><th>Context</th><td>{{ page.context }}</td></tr>{% endif %}
+    {% if page.recognition %}<tr><th>Recognition</th><td>{{ page.recognition }}</td></tr>{% endif %}
+    {% if page.stack %}<tr><th>Tools</th><td>{{ page.stack | join: ', ' }}</td></tr>{% endif %}
+    {% if page.links %}
+      <tr><th>Links</th><td>{% for l in page.links %}<a href="{{ l.url }}" rel="noopener">{{ l.label }}</a>{% endfor %}</td></tr>
+    {% endif %}
+  </table>
+
+  {% if page.hero %}
+    <div class="media">
+      {% if page.hero.youtube %}
+        <div class="embed">
+          <iframe src="https://www.youtube-nocookie.com/embed/{{ page.hero.youtube }}" title="{{ page.title }} video" loading="lazy" allow="accelerometer; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+        </div>
+      {% elsif page.hero.video %}
+        <video src="{{ page.hero.video | relative_url }}" poster="{{ page.thumb | relative_url }}" controls muted playsinline preload="metadata"></video>
+      {% elsif page.hero.image %}
+        <img src="{{ page.hero.image | relative_url }}" alt="{{ page.title }}">
+      {% endif %}
+      {% if page.hero.caption %}<p class="caption">{{ page.hero.caption }}</p>{% endif %}
+    </div>
+  {% endif %}
+
+  {% if page.highlights %}
+    <section class="block">
+      <h2 class="sec-title">Summary</h2>
+      <ul class="summary">
+        {% for h in page.highlights %}
+          <li>{{ h | markdownify | remove: '<p>' | remove: '</p>' }}</li>
+        {% endfor %}
+      </ul>
+    </section>
+  {% endif %}
+
+  <section class="block">
+    <div class="sec-row">
+      <h2 class="sec-title">Write-up</h2>
+      <span class="read-time">{{ minutes }} min read</span>
+    </div>
+    <div class="prose">
+      {{ content }}
+    </div>
+  </section>
+
+  {% assign items = site.projects | sort: 'importance' %}
+  {% for p in items %}
+    {% if p.url == page.url %}
+      {% assign i = forloop.index0 %}
+    {% endif %}
+  {% endfor %}
+  {% assign prev_i = i | minus: 1 %}
+  {% assign next_i = i | plus: 1 %}
+  <nav class="pager" aria-label="More projects">
+    {% if prev_i >= 0 %}{% assign prev = items[prev_i] %}<a href="{{ prev.url | relative_url }}"><span>← Previous</span>{{ prev.title }}</a>{% endif %}
+    {% if next_i < items.size %}{% assign next = items[next_i] %}<a href="{{ next.url | relative_url }}"><span>Next →</span>{{ next.title }}</a>{% endif %}
+  </nav>
+</article>

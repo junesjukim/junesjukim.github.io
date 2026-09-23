@@ -1,0 +1,109 @@
+---
+layout: base
+title: Home
+permalink: /
+description: June Kim, undergraduate researcher at Seoul National University working on robot learning, 3D perception, and dexterous manipulation.
+---
+
+<div class="container home">
+  <aside class="profile">
+    <img class="avatar" src="{{ '/assets/img/avatar.jpg' | relative_url }}" alt="June Kim" width="480" height="480">
+    <h1 class="profile-name">June Kim</h1>
+    <p class="profile-role">Undergraduate Researcher</p>
+    <p class="profile-org">Seoul National University</p>
+    <ul class="icons" role="list">
+      <li><a href="mailto:{{ site.data.socials.email }}" aria-label="Email" title="Email"><i class="fa-solid fa-envelope"></i></a></li>
+      <li><a href="https://scholar.google.com/citations?user={{ site.data.socials.scholar_userid }}" aria-label="Google Scholar" title="Google Scholar" rel="noopener"><i class="fa-solid fa-graduation-cap"></i></a></li>
+      <li><a href="https://github.com/{{ site.data.socials.github_username }}" aria-label="GitHub" title="GitHub" rel="noopener"><i class="fa-brands fa-github"></i></a></li>
+      <li><a href="https://www.linkedin.com/in/{{ site.data.socials.linkedin_username }}" aria-label="LinkedIn" title="LinkedIn" rel="noopener"><i class="fa-brands fa-linkedin-in"></i></a></li>
+      {% assign cv_file = site.static_files | where: 'path', site.cv_file | first %}
+      {% if cv_file %}
+        <li><a href="{{ site.cv_file | relative_url }}" aria-label="CV" title="CV" rel="noopener"><i class="fa-solid fa-file-lines"></i></a></li>
+      {% else %}
+        <li><span class="icon-disabled" aria-label="CV (coming soon)" title="CV coming soon"><i class="fa-solid fa-file-lines"></i></span></li>
+      {% endif %}
+    </ul>
+    <p class="eyebrow">Research interests</p>
+    <ul class="tags" role="list">
+      <li>Vision-Language-Action Models</li>
+      <li>World Action Models</li>
+      <li>Synthetic Robot Data</li>
+      <li>3D Vision</li>
+    </ul>
+  </aside>
+
+  <div class="main-col">
+    <section class="block" id="about">
+      <h2 class="sec-title">About</h2>
+      <div class="prose-sm">
+        <p>
+          I'm an undergraduate researcher at <a href="https://www.snu.ac.kr/" rel="noopener">Seoul National University</a>,
+          advised by Prof. <a href="https://jhugestar.github.io/" rel="noopener">Hanbyul Joo</a>. I work on robot learning
+          where 3D perception meets manipulation: teaching robots to understand the scenes they act in. Previously, I worked
+          with Prof. Songhwai Oh at the <a href="https://rllab.snu.ac.kr/" rel="noopener">Robot Learning Lab</a>.
+        </p>
+        <p>
+          My long-term goal is to build robots that act in the open world as fluidly as people do: seeing a
+          scene in 3D, reasoning about what to do, and carrying out long-horizon, dexterous behavior
+          reliably. Toward this, I work on turning what a robot sees into simulation-ready worlds, grounding
+          language in 3D for manipulation, and generative planners fast enough to run inside the control loop.
+        </p>
+      </div>
+    </section>
+
+    <section class="block" id="news">
+      <h2 class="sec-title">News</h2>
+      <ul class="news" role="list">
+        {% for n in site.data.news %}
+          <li><span class="date">{{ n.date }}</span><span>{{ n.text }}</span></li>
+        {% endfor %}
+      </ul>
+    </section>
+
+    <section class="block" id="research">
+      <h2 class="sec-title">Research</h2>
+      <div class="cards">
+        {% for pub in site.data.publications %}
+          <article class="pub">
+            <a class="pub-media" href="{{ pub.links[0].url }}" rel="noopener" tabindex="-1" aria-hidden="true">
+              <img src="{{ pub.image | relative_url }}" alt="" loading="lazy" width="960" height="600">
+            </a>
+            <div class="pub-body">
+              <p class="badges"><span class="badge">{{ pub.venue }}, {{ pub.year }}</span></p>
+              <h3 class="pub-title"><a href="{{ pub.links[0].url }}" rel="noopener">{{ pub.title }}</a></h3>
+              <p class="pub-authors">{{ pub.authors | replace: 'Sungjoo Kim', '<strong>Sungjoo Kim</strong>' }}</p>
+              <p class="pub-summary">{{ pub.summary }}</p>
+              <ul class="tags tags--sm" role="list">{% for t in pub.tags %}<li>{{ t }}</li>{% endfor %}</ul>
+              <p class="buttons">
+                {% for l in pub.links %}
+                  <a class="btn" href="{{ l.url }}" rel="noopener">
+                    {% if l.icon == 'github' %}<i class="fa-brands fa-github"></i>{% elsif l.icon == 'file' %}<i class="fa-solid fa-file-lines"></i>{% else %}<i class="fa-solid fa-globe"></i>{% endif %}
+                    {{ l.label }}
+                  </a>
+                {% endfor %}
+              </p>
+            </div>
+          </article>
+        {% endfor %}
+      </div>
+      <p class="note">* Equal contribution</p>
+    </section>
+
+    <section class="block" id="projects">
+      <div class="sec-row">
+        <h2 class="sec-title">Projects</h2>
+        <a class="btn btn--ghost" href="{{ '/projects/' | relative_url }}">View all <i class="fa-solid fa-arrow-right"></i></a>
+      </div>
+      {% include project_grid.liquid %}
+    </section>
+
+    <section class="block" id="awards">
+      <h2 class="sec-title">Honors &amp; Awards</h2>
+      <ul class="news" role="list">
+        {% for a in site.data.awards %}
+          <li><span class="date">{{ a.label }}</span><span>{{ a.text }}{% if a.project %} (<a href="{{ a.project | relative_url }}">{{ a.project_title }}</a>){% endif %}</span></li>
+        {% endfor %}
+      </ul>
+    </section>
+  </div>
+</div>

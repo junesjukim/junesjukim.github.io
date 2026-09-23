@@ -1,0 +1,22 @@
+- title: "SimuScene: Simulation-Ready Compositional 3D Scene Reconstruction from a Single Image"
+  authors: "Inhee Lee*, Sangwon Baik*, Sungjoo Kim, Hyeonwoo Kim, Hyunsoo Cha, Hanbyul Joo"
+  venue: Preprint
+  year: 2026
+  image: /assets/img/pubs/simuscene.jpg
+  summary: Reconstructs interactive, simulation-ready 3D scenes from a single image by putting a physics engine in the loop of shape and layout estimation.
+  tags: [3D Scene Reconstruction, Physics Simulation, Robot Manipulation]
+  links:
+    - { label: Project, icon: globe, url: "https://snuvclab.github.io/SimuScene/" }
+    - { label: arXiv, icon: file, url: "https://arxiv.org/abs/2606.03994" }
+    - { label: Code, icon: github, url: "https://github.com/snuvclab/SimuScene" }
+
+- title: "ZeroDex: Zero-Shot Long-Horizon Dexterous Manipulation via Multi-View 3D-Grounded VLM Reasoning"
+  authors: "Jisoo Kim, Sangwon Baik, Taeksoo Kim, Sungjoo Kim, Junyoung Lee, Mingi Choi, Hanbyul Joo"
+  venue: Preprint
+  year: 2026
+  image: /assets/img/pubs/zerodex.jpg
+  summary: Grounds language instructions into executable 3D task plans from multi-view RGB images, enabling zero-shot long-horizon dexterous manipulation and tool use.
+  tags: [Dexterous Manipulation, Vision-Language Models, 3D Grounding]
+  links:
+    - { label: Project, icon: globe, url: "https://jlogkim.github.io/zerodex/" }
+    - { label: arXiv, icon: file, url: "https://arxiv.org/abs/2606.19340" }
